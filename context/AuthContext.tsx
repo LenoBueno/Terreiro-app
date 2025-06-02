@@ -1,6 +1,31 @@
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 import { User } from '@/types';
+
+// Storage helper that works on both web and native
+const storage = {
+  async getItem(key: string) {
+    if (Platform.OS === 'web') {
+      return localStorage.getItem(key);
+    }
+    return SecureStore.getItemAsync(key);
+  },
+  async setItem(key: string, value: string) {
+    if (Platform.OS === 'web') {
+      localStorage.setItem(key, value);
+    } else {
+      await SecureStore.setItemAsync(key, value);
+    }
+  },
+  async removeItem(key: string) {
+    if (Platform.OS === 'web') {
+      localStorage.removeItem(key);
+    } else {
+      await SecureStore.deleteItemAsync(key);
+    }
+  },
+};
 
 interface AuthContextType {
   user: User | null;
@@ -38,7 +63,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const userJson = await SecureStore.getItemAsync('user');
+        const userJson = await storage.getItem('user');
         if (userJson) {
           setUser(JSON.parse(userJson));
         }
@@ -70,7 +95,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         createdAt: new Date().toISOString(),
       };
 
-      await SecureStore.setItemAsync('user', JSON.stringify(userData));
+      await storage.setItem('user', JSON.stringify(userData));
       setUser(userData);
     } catch (error) {
       console.error('Sign in failed:', error);
@@ -96,7 +121,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         createdAt: new Date().toISOString(),
       };
       
-      await SecureStore.setItemAsync('user', JSON.stringify(userData));
+      await storage.setItem('user', JSON.stringify(userData));
       setUser(userData);
     } catch (error) {
       console.error('Sign up failed:', error);
@@ -108,7 +133,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signOut = async () => {
     try {
-      await SecureStore.deleteItemAsync('user');
+      await storage.removeItem('user');
       setUser(null);
     } catch (error) {
       console.error('Sign out failed:', error);
@@ -122,7 +147,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
       
       const updatedUser = { ...user, ...userData };
-      await SecureStore.setItemAsync('user', JSON.stringify(updatedUser));
+      await storage.setItem('user', JSON.stringify(updatedUser));
       setUser(updatedUser);
     } catch (error) {
       console.error('Update user failed:', error);
