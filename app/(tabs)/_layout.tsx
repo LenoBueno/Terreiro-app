@@ -1,18 +1,14 @@
 import { Tabs } from 'expo-router';
 import { useAuth } from '@/hooks/useAuth';
-import { useTenant } from '@/hooks/useTenant';
-import { Chrome as Home, Users, Calendar, Settings, ShieldAlert } from 'lucide-react-native';
+import { Chrome as Home, BookOpen, Calendar, MessageSquare, Droplets, Leaf, Bath } from 'lucide-react-native';
 
 export default function TabLayout() {
   const { user } = useAuth();
-  const { currentTenant } = useTenant();
 
-  const isSuperAdmin = user?.role === 'superadmin';
-  const isAdmin = user?.role === 'admin' || isSuperAdmin;
-  
   return (
     <Tabs
       screenOptions={{
+        headerShown: false,
         tabBarActiveTintColor: '#000000',
         tabBarInactiveTintColor: '#9E9E9E',
         tabBarStyle: {
@@ -25,62 +21,55 @@ export default function TabLayout() {
           fontFamily: 'Inter-Regular',
           fontSize: 12,
         },
-        headerShown: false,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <Home size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
         }}
       />
-      
-      {isAdmin && (
-        <Tabs.Screen
-          name="events"
-          options={{
-            title: 'Events',
-            tabBarIcon: ({ color, size }) => (
-              <Calendar size={size} color={color} />
-            ),
-          }}
-        />
-      )}
-      
-      {isAdmin && (
-        <Tabs.Screen
-          name="users"
-          options={{
-            title: 'Users',
-            tabBarIcon: ({ color, size }) => (
-              <Users size={size} color={color} />
-            ),
-          }}
-        />
-      )}
-      
-      {isSuperAdmin && (
-        <Tabs.Screen
-          name="superadmin"
-          options={{
-            title: 'Super',
-            tabBarIcon: ({ color, size }) => (
-              <ShieldAlert size={size} color={color} />
-            ),
-          }}
-        />
-      )}
-      
       <Tabs.Screen
-        name="settings"
+        name="events"
         options={{
-          title: 'Settings',
-          tabBarIcon: ({ color, size }) => (
-            <Settings size={size} color={color} />
-          ),
+          title: 'Eventos',
+          tabBarIcon: ({ color, size }) => <Calendar size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="reading"
+        options={{
+          title: 'Leitura',
+          tabBarIcon: ({ color, size }) => <BookOpen size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="messages"
+        options={{
+          title: 'Mensagens',
+          tabBarIcon: ({ color, size }) => <MessageSquare size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="cleaning"
+        options={{
+          title: 'Limpeza',
+          tabBarIcon: ({ color, size }) => <Droplets size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="herbs"
+        options={{
+          title: 'Ervas',
+          tabBarIcon: ({ color, size }) => <Leaf size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="baths"
+        options={{
+          title: 'Banhos',
+          tabBarIcon: ({ color, size }) => <Bath size={size} color={color} />,
         }}
       />
     </Tabs>
