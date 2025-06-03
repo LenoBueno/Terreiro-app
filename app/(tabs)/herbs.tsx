@@ -14,7 +14,24 @@ const HERBS = [
     umbandaUse: 'Utilizado para limpeza espiritual, fortalecimento da aura e proteção contra energias negativas.',
     image: 'https://images.pexels.com/photos/4239113/pexels-photo-4239113.jpeg'
   },
-  // ... other herbs
+  {
+    id: '2',
+    name: 'Arruda',
+    scientificName: 'Ruta graveolens',
+    description: 'Planta herbácea perene com folhas verde-azuladas e flores amarelas.',
+    generalUse: 'Anti-inflamatória e antisséptica.',
+    umbandaUse: 'Poderosa para proteção espiritual e limpeza energética.',
+    image: 'https://images.pexels.com/photos/4239114/pexels-photo-4239114.jpeg'
+  },
+  {
+    id: '3',
+    name: 'Guiné',
+    scientificName: 'Petiveria alliacea',
+    description: 'Erva perene com folhas alongadas e flores brancas pequenas.',
+    generalUse: 'Propriedades anti-inflamatórias e analgésicas.',
+    umbandaUse: 'Usada para descarrego e proteção espiritual.',
+    image: 'https://images.pexels.com/photos/4239115/pexels-photo-4239115.jpeg'
+  }
 ];
 
 export default function HerbsScreen() {
@@ -42,10 +59,10 @@ export default function HerbsScreen() {
         visible={!!selectedHerb}
         onClose={() => setSelectedHerb(null)}
         title={selectedHerb?.name || ''}
+        subtitle={selectedHerb?.scientificName}
         description={selectedHerb?.description || ''}
         image={selectedHerb?.image || ''}
         details={selectedHerb ? [
-          { label: 'Nome Científico', value: selectedHerb.scientificName },
           { label: 'Uso Geral', value: selectedHerb.generalUse },
           { label: 'Uso na Umbanda', value: selectedHerb.umbandaUse },
         ] : []}
