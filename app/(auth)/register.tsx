@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
 import { Lock, Mail, User } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
@@ -40,72 +41,84 @@ export default function RegisterScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.innerContainer}>
-          <Text style={styles.title}>{currentTenant?.name || 'Register'}</Text>
-          
-          {error && (
-            <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-          )}
-
-          <View style={styles.inputContainer}>
-            <User size={20} color="#000000" />
-            <TextInput
-              style={styles.input}
-              placeholder="Full Name"
-              value={name}
-              onChangeText={setName}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Mail size={20} color="#000000" />
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Lock size={20} color="#000000" />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Lock size={20} color="#000000" />
-            <TextInput
-              style={styles.input}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry
-            />
-          </View>
-
-          <TouchableOpacity style={styles.button} onPress={handleRegister}>
-            <Text style={styles.buttonText}>Register</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.linkButton} 
-            onPress={() => router.push('/(auth)/login')}
-          >
-            <Text style={styles.linkText}>Already have an account? Login</Text>
-          </TouchableOpacity>
+      <LinearGradient
+        colors={['#4c669f', '#3b5998', '#192f6a']}
+        style={styles.gradient}
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>Terreiro Digital</Text>
+          <Text style={styles.subtitle}>Crie sua conta</Text>
         </View>
-      </ScrollView>
+
+        <View style={styles.formContainer}>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.innerContainer}>
+              <Text style={styles.formTitle}>{currentTenant?.name || 'Cadastro'}</Text>
+          
+              {error && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>{error}</Text>
+                </View>
+              )}
+
+              <View style={styles.inputContainer}>
+                <User size={20} color="#000000" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Full Name"
+                  value={name}
+                  onChangeText={setName}
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Mail size={20} color="#000000" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Lock size={20} color="#000000" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Lock size={20} color="#000000" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  secureTextEntry
+                />
+              </View>
+
+              <TouchableOpacity style={styles.button} onPress={handleRegister}>
+                <Text style={styles.buttonText}>Register</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.linkButton} 
+                onPress={() => router.push('/(auth)/login')}
+              >
+                <Text style={styles.linkText}>Already have an account? Login</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 }
@@ -113,20 +126,45 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+  },
+  gradient: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    paddingTop: 80,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.8)',
+  },
+  formContainer: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    padding: 20,
+    paddingTop: 40,
+    flex: 1,
   },
   scrollContainer: {
     flexGrow: 1,
   },
   innerContainer: {
     flex: 1,
-    padding: 24,
-    justifyContent: 'center',
+    padding: 20,
   },
-  title: {
-    fontSize: 32,
+  formTitle: {
+    fontSize: 24,
     fontFamily: 'Inter-Bold',
-    marginBottom: 32,
+    marginBottom: 24,
     textAlign: 'center',
     color: '#000000',
   },
