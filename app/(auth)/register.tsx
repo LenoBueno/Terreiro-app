@@ -42,11 +42,11 @@ export default function RegisterScreen() {
       style={styles.container}
     >
       <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
+        colors={['#006B3F', '#005a34', '#004527']}
         style={styles.gradient}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Terreiro Digital</Text>
+          <Text style={styles.title}>CADASTRO</Text>
           <Text style={styles.subtitle}>Crie sua conta</Text>
         </View>
 
@@ -106,7 +106,7 @@ export default function RegisterScreen() {
               </View>
 
               <TouchableOpacity style={styles.button} onPress={handleRegister}>
-                <Text style={styles.buttonText}>Register</Text>
+                <Text style={styles.buttonText}>REGISTRE-SE</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
     justifyContent: 'flex-start',
-    paddingTop: 80,
+    paddingTop: 90,
   },
   header: {
     alignItems: 'center',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: 'light',
     color: '#fff',
     marginBottom: 10,
   },
@@ -153,6 +153,11 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 40,
     flex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 7,
+    elevation: 5,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -163,7 +168,7 @@ const styles = StyleSheet.create({
   },
   formTitle: {
     fontSize: 24,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-Medium',
     marginBottom: 24,
     textAlign: 'center',
     color: '#000000',
@@ -184,7 +189,7 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   button: {
-    backgroundColor: '#000000',
+    backgroundColor: '#006B3F',
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -192,7 +197,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFFFFF',
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Inter-Light',
     fontSize: 16,
   },
   linkButton: {
