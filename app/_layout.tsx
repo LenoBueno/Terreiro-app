@@ -36,12 +36,13 @@ export default function RootLayout() {
         <AuthProvider>
           <StatusBar style="auto" />
           <Drawer
-            screenOptions={{ 
+            screenOptions={{
               headerShown: false,
               drawerStyle: {
-                backgroundColor: '#FFFFFF',
-                width: 280,
+                backgroundColor: 'transparent',
+                width: '100%',
               },
+              overlayColor: 'rgba(0, 0, 0, 0.5)',
             }}
             drawerContent={(props) => <DrawerContent {...props} />}
           >

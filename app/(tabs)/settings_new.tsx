@@ -12,7 +12,6 @@ import { useRouter } from 'expo-router';
 import { Header } from '@/components/Header';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
-import { Stack, router } from 'expo-router';
 import {
   User,
   Bell,
@@ -22,14 +21,32 @@ import {
   ChevronRight,
 } from 'lucide-react-native';
 
-SettingsScreen.displayName = 'SettingsScreen';
+type SettingsScreenProps = {
+  // Add any props if needed
+};
 
-export default function SettingsScreen() {
+export default function SettingsScreen({}: SettingsScreenProps) {
   const { user, signOut } = useAuth();
   const { currentTenant } = useTenant();
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
+  const router = useRouter();
 
+  const handleSignOut = () => {
+    Alert.alert('Sair', 'Tem certeza que deseja sair?', [
+      {
+        text: 'Cancelar',
+        style: 'cancel',
+      },
+      {
+        text: 'Sair',
+        onPress: () => {
+          signOut();
+          router.replace('/(auth)/login' as any);
+        },
+      },
+    ]);
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -142,22 +159,6 @@ export default function SettingsScreen() {
       fontSize: 14,
     },
   });
-
-  const handleSignOut = () => {
-    Alert.alert('Sair', 'Tem certeza que deseja sair?', [
-      {
-        text: 'Cancelar',
-        style: 'cancel',
-      },
-      {
-        text: 'Sair',
-        onPress: () => {
-          signOut();
-          router.replace('/(auth)/login' as any);
-        },
-      },
-    ]);
-  };
 
   return (
     <View style={styles.container}>
