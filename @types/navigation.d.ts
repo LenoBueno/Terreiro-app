@@ -5,6 +5,9 @@ export type RootStackParamList = {
   '/(tabs)/herbs': undefined;
   '/(tabs)/cleaning': undefined;
   '/(tabs)/fronts': undefined;
+  '/(tabs)/fronts_detail/bara_detail': { id: string; name?: string };
+  '/(tabs)/fronts_detail/xapana_detail': { id: string; name?: string };
+  '/(tabs)/add_frente': undefined;
   '/(tabs)/reading': undefined;
   '/(tabs)/baths': undefined;
   '/(tabs)/events': undefined;

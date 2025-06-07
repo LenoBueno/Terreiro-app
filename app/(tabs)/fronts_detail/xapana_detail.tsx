@@ -1,33 +1,27 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 
-const HERB_DATA = {
-  id: '2',
-  name: 'Alfazema',
-  scientificName: 'Lavandula angustifolia',
-  description: 'A Alfazema, também conhecida\n como Lavanda, é amplamente\n reconhecida por suas propriedades\n calmantes e relaxantes. É uma das ervas\n mais populares na aromaterapia, sendo usada\n para aliviar o estresse e promover o bem-estar.',
-  uses: [
-    'Ação calmante e relaxante',
-    'Auxilia no alívio do estresse e ansiedade',
-    'Melhora a qualidade do sono',
-    'Antisséptico natural',
-    'Alívio de dores de cabeça',
-    'Repelente natural de insetos',
-  ],
-  preparation: 'Para o banho, prepare um chá com 2 colheres de sopa de flores secas para 1 litro de água fervente. Deixe em infusão por 10 minutos, coe e adicione à água do banho morna. Para uso tópico, dilua algumas gotas de óleo essencial em um óleo carreador antes da aplicação na pele.',
-  benefits: 'O banho com alfazema promove relaxamento profundo, alivia tensões musculares, acalma a mente e equilibra as emoções. Na espiritualidade, é associada à purificação, proteção e elevação espiritual, ajudando a afastar energias negativas e promovendo a paz interior.',
-  category: 'Calmante e Relaxante',
-  energy: 'Yin (Feminina)',
-  element: 'Ar',
-  chakras: 'Coronário (Sahasrara) e Frontal (Ajna)',
-  image: require('@/assets/images/herbs/alfazema.png'),
+const XAPANA_DATA = {
+  id: '8',
+  name: 'Xapanã',
+  description: 'Xapanã, também conhecido \ncomo Obaluaê ou Omolu, é o orixá da cura, das doenças e da saúde. Ele é o senhor da terra e da transformação, representando o ciclo de vida e morte. Xapanã é o curador por excelência, tanto do corpo quanto do espírito, e é invocado para afastar doenças e males físicos e espirituais.',
+  category: 'Orixá da Cura e Transformação',
+  energy: '',
+  element: '',
+  chakras: '',
+  image: require('@/assets/images/fronts/fronts/xapana.png'),
+  offerings: [
+    'Jubetei: pipoca, feijão-preto, milho, amendoim torrado, pé de moleque, rocambole, epô e tempero verde. Envolto em papel lilás.',
+    'Belujá: pipoca, feijão-preto, milho, amendoim torrado, pé de moleque, rocambole, epô e tempero verde. Envolto em papel lilás.',
+    'Sapata: pipoca, feijão-preto, milho, amendoim torrado, pé de moleque, rocambole, epô e tempero verde. Envolto em papel vermelho e preto.'
+  ]
 };
 
-export default function HerbDetailScreen() {
+export default function XapanaDetailScreen() {
   const router = useRouter();
-  const herb = HERB_DATA;
+  const xapana = XAPANA_DATA;
 
   return (
     <View style={styles.container}>
@@ -37,8 +31,8 @@ export default function HerbDetailScreen() {
           <MaterialIcons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         <View style={styles.headerTexts}>
-          <Text style={styles.title}>{herb.name}</Text>
-          <Text style={styles.subtitle}>{herb.scientificName}</Text>
+          <Text style={styles.title}>{xapana.name}</Text>
+          <Text style={styles.subtitle}>{xapana.category}</Text>
         </View>
         <View style={styles.headerIcons}>
           <TouchableOpacity style={styles.iconButton}>
@@ -50,9 +44,9 @@ export default function HerbDetailScreen() {
         </View>
       </View>
 
-      {/* IMAGEM EM PRIMEIRO PLANO */}
+      {/* Imagem */}
       <View style={styles.imageContainer}>
-        <Image source={herb.image} style={styles.herbImage} />
+        <Image source={xapana.image} style={styles.herbImage} />
       </View>
 
       {/* Conteúdo */}
@@ -64,43 +58,37 @@ export default function HerbDetailScreen() {
           >
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Descrição</Text>
-              <Text style={styles.sectionText}>{herb.description}</Text>
+              <Text style={styles.sectionText}>{xapana.description}</Text>
             </View>
+            
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Usos e Propriedades</Text>
+              <Text style={styles.sectionTitle}>Oferendas</Text>
               <View style={styles.usesList}>
-                {herb.uses.map((use, index) => (
+                {xapana.offerings.map((item, index) => (
                   <View key={index} style={styles.useItem}>
                     <View style={styles.bulletPoint} />
-                    <Text style={styles.useText}>{use}</Text>
+                    <Text style={styles.useText}>{item}</Text>
                   </View>
                 ))}
               </View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Modo de Preparo</Text>
-              <Text style={styles.sectionText}>{herb.preparation}</Text>
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Benefícios do Banho</Text>
-              <Text style={styles.sectionText}>{herb.benefits}</Text>
-            </View>
+
             <View style={styles.infoGrid}>
               <View style={styles.infoItem}>
                 <Text style={styles.infoLabel}>Categoria</Text>
-                <Text style={styles.infoValue}>{herb.category}</Text>
+                <Text style={styles.infoValue}>{xapana.category}</Text>
               </View>
               <View style={styles.infoItem}>
                 <Text style={styles.infoLabel}>Energia</Text>
-                <Text style={styles.infoValue}>{herb.energy}</Text>
+                <Text style={styles.infoValue}>{xapana.energy}</Text>
               </View>
               <View style={styles.infoItem}>
                 <Text style={styles.infoLabel}>Elemento</Text>
-                <Text style={styles.infoValue}>{herb.element}</Text>
+                <Text style={styles.infoValue}>{xapana.element}</Text>
               </View>
               <View style={styles.infoItem}>
                 <Text style={styles.infoLabel}>Chakras</Text>
-                <Text style={styles.infoValue}>{herb.chakras}</Text>
+                <Text style={styles.infoValue}>{xapana.chakras}</Text>
               </View>
             </View>
           </ScrollView>
@@ -158,8 +146,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: 'absolute',
-    top: 80,
-    left: 170,
+    top: 50,
+    left: 110,
     right: 0,
     alignItems: 'center',
     zIndex: 1000,
@@ -217,7 +205,7 @@ const styles = StyleSheet.create({
   },
   useItem: {
     flexDirection: 'row',
-    marginBottom: 8,
+    marginBottom: 12,
     alignItems: 'flex-start',
   },
   bulletPoint: {

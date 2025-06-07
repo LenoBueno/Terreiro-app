@@ -33,7 +33,7 @@ const HERBS: HerbItem[] = [
     scientificName: 'Rosmarinus officinalis',
     description: 'Planta aromática com propriedades estimulantes e digestivas.',
     uses: ['Estimulante', 'Digestivo', 'Antisséptico'],
-    image: require('@/assets/images/herbs/alecrim.webp')
+    image: require('@/assets/images/herbs/alecrim.png')
   },
   { 
     id: '2', 
@@ -41,7 +41,7 @@ const HERBS: HerbItem[] = [
     scientificName: 'Lavandula angustifolia',
     description: 'Conhecida por suas propriedades calmantes e relaxantes.',
     uses: ['Calmante', 'Relaxante', 'Antisséptico'],
-    image: require('@/assets/images/herbs/alfazema.webp')
+    image: require('@/assets/images/herbs/alfazema.png')
   },
   { 
     id: '3', 
@@ -49,7 +49,7 @@ const HERBS: HerbItem[] = [
     scientificName: 'Schinus terebinthifolius',
     description: 'Usada na medicina popular como anti-inflamatório e cicatrizante.',
     uses: ['Anti-inflamatório', 'Cicatrizante', 'Antisséptico'],
-    image: require('@/assets/images/herbs/aroeira.webp')
+    image: require('@/assets/images/herbs/aroeira.png')
   },
   { 
     id: '4', 
@@ -57,7 +57,7 @@ const HERBS: HerbItem[] = [
     scientificName: 'Ruta graveolens',
     description: 'Tradicionalmente usada para proteção e limpeza espiritual.',
     uses: ['Proteção', 'Limpeza espiritual', 'Antirreumático'],
-    image: require('@/assets/images/herbs/arruda.webp')
+    image: require('@/assets/images/herbs/arruda.png')
   },
   { 
     id: '5', 
@@ -65,7 +65,7 @@ const HERBS: HerbItem[] = [
     scientificName: 'Sansevieria trifasciata',
     description: 'Conhecida por afastar energias negativas e trazer proteção.',
     uses: ['Proteção', 'Purificação', 'Decoração'],
-    image: require('@/assets/images/herbs/espada-sao-jorge.webp')
+    image: require('@/assets/images/herbs/espada-sao-jorge.png')
   },
   { 
     id: '6', 
@@ -73,7 +73,7 @@ const HERBS: HerbItem[] = [
     scientificName: 'Eucalyptus globulus',
     description: 'Amplamente utilizado para problemas respiratórios.',
     uses: ['Descongestionante', 'Expectorante', 'Antisséptico'],
-    image: require('@/assets/images/herbs/eucalipto.webp')
+    image: require('@/assets/images/herbs/eucalipto.png')
   },
   { 
     id: '7', 
@@ -81,7 +81,7 @@ const HERBS: HerbItem[] = [
     scientificName: 'Petiveria alliacea',
     description: 'Usada na medicina popular para diversos fins terapêuticos.',
     uses: ['Analgésico', 'Anti-inflamatório', 'Imunomodulador'],
-    image: require('@/assets/images/herbs/guine.webp')
+    image: require('@/assets/images/herbs/guine.png')
   },
   { 
     id: '8', 
@@ -89,7 +89,7 @@ const HERBS: HerbItem[] = [
     scientificName: 'Aristolochia cymbifera',
     description: 'Conhecido por suas propriedades medicinais diversas.',
     uses: ['Anti-inflamatório', 'Analgésico', 'Antimicrobiano'],
-    image: require('@/assets/images/herbs/cipo-mil-homens.webp')
+    image: require('@/assets/images/herbs/cipo-mil-homens.png')
   },
   { 
     id: '9', 
@@ -97,7 +97,7 @@ const HERBS: HerbItem[] = [
     scientificName: 'Cinnamomum verum',
     description: 'Especiaria com propriedades termogênicas e anti-inflamatórias.',
     uses: ['Termogênico', 'Anti-inflamatório', 'Antioxidante'],
-    image: require('@/assets/images/herbs/canela.webp')
+    image: require('@/assets/images/herbs/canela.png')
   },
   { 
     id: '10', 

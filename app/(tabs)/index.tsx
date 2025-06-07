@@ -74,7 +74,7 @@ const menuItems: MenuItem[] = [
     icon: 'bathtub',
     color: '#00BCD4',
     route: '/(tabs)/baths',
-    image: require('../../assets/images/home/banhos.webp')
+    image: require('../../assets/images/home/banhos.png')
   },
   { 
     id: '6',
@@ -217,7 +217,7 @@ export default function HomeScreen() {
                   <View style={styles.menuCardContent}>
                     <Image 
                       source={item.image} 
-                      style={styles.menuCardImage} 
+                      style={item.title === 'Eventos' ? styles.menuCardImageEvents : styles.menuCardImage} 
                       resizeMode="contain" // Mantém a proporção da imagem
                     />
                   </View>
@@ -370,9 +370,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   menuCardImage: {
-    width: 60,
-    height: 60,
+    width: 75,
+    height: 75,
     resizeMode: 'contain',
+  },
+  // Estilo específico para a imagem de eventos
+  menuCardImageEvents: {
+    width: 85,
+    height: 85,
+    resizeMode: 'contain',
+    marginTop: -10, // Ajuste fino para centralizar verticalmente
   },
   menuCardText: {
     fontSize: 18,
@@ -381,7 +388,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_500Medium',
   },
   section: {
-    marginTop: 20,
+    marginTop: 15,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -401,23 +408,23 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_500Medium',
   },
   recentItemsContainer: {
-    paddingRight: 20,
+    paddingRight: 10,
   },
   recentItem: {
-    marginRight: 15,
+    marginRight: 10, // Aumentado de 15 para 20
     alignItems: 'center',
-    width: 70,
+    width: 80, // Aumentado de 70 para 80
   },
   recentItemIcon: {
-    width: 50,
-    height: 50,
+    width: 60, // Aumentado de 50 para 60
+    height: 60, // Aumentado de 50 para 60
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: -3,
   },
   recentItemImage: {
-    width: 40,
-    height: 40,
+    width: 50, // Aumentado de 40 para 50
+    height: 50, // Aumentado de 40 para 50
     backgroundColor: 'transparent',
   },
   recentItemText: {
@@ -432,7 +439,7 @@ const styles = StyleSheet.create({
     height: 40, // Tamanho fixo
     borderRadius: 20, // Borda arredondada para criar um círculo
     marginLeft: 15, // Espaçamento à esquerda
-    borderWidth: 2, // Borda branca
+    borderWidth: 0, // Borda branca
     borderColor: '#fff', // Cor da borda
   },
 });

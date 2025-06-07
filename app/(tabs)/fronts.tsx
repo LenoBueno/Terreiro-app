@@ -1,248 +1,377 @@
-import { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  Dimensions,
-  SafeAreaView,
-  Image,
-} from 'react-native';
-import { DrawerActions } from '@react-navigation/native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useRouter, useLocalSearchParams, useNavigation } from 'expo-router';
-import { DrawerToggleButton } from '@react-navigation/drawer';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { useRouter } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { RootStackParamList } from '@/@types/navigation';
+import { useAuth } from '@/hooks/useAuth';
+import FloatingActionButton from '@/components/common/FloatingActionButton';
 
+// Definição do tipo para os itens de frentes
 type FrenteItem = {
   id: string;
   name: string;
-  subtitle: string;
-  description: string;
-  method: string;
-  benefits: string;
-  image: string;
+  image: any;
+  description?: string;
+  orixas?: string[];
+  attributes?: string[];
 };
 
+// Obtém a largura da tela para cálculos responsivos
+const { width } = Dimensions.get('window');
+// Margem padrão entre os cards
+const CARD_MARGIN = 16;
+// Calcula a largura dos cards baseado no tamanho da tela e margens
+const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 3; // 3 cards por linha
+
+// Dados das frentes
 const FRENTES: FrenteItem[] = [
-  {
-    id: '1',
-    name: 'Defumação',
-    subtitle: 'Limpeza Energética',
-    description: 'Técnica de limpeza espiritual com ervas sagradas.',
-    method:
-      'Acenda as ervas secas em um defumador e circule o ambiente em sentido horário, começando pela porta de entrada.',
-    benefits:
-      'Purifica o ambiente, remove energias negativas e harmoniza as vibrações do local.',
-    image: 'https://images.pexels.com/photos/4207791/pexels-photo-4207791.jpeg',
+  { 
+    id: '1', 
+    name: 'Bará', 
+    description: 'O mensageiro dos orixás, dono das encruzilhadas e dos caminhos.',
+    orixas: ['Bará', 'Exu', 'Elegguá'],
+    attributes: ['Comunicação', 'Abertura de Caminhos', 'Movimento'],
+    image: require('@/assets/images/fronts/bara.png')
   },
-  {
-    id: '2',
-    name: 'Sal Grosso',
-    subtitle: 'Purificação',
-    description: 'Método tradicional de limpeza com sal grosso.',
-    method:
-      'Espalhe sal grosso nos cantos do ambiente e deixe agir por 24 horas antes de recolher.',
-    benefits:
-      'Absorve energias densas e negativas, protege o ambiente e seus ocupantes.',
-    image: 'https://images.pexels.com/photos/4207792/pexels-photo-4207792.jpeg',
+  { 
+    id: '2', 
+    name: 'Ogum', 
+    description: 'O guerreiro e protetor, senhor do ferro e das estradas.',
+    orixas: ['Ogum', 'Ogum Megê', 'Ogum Naruê'],
+    attributes: ['Proteção', 'Coragem', 'Superação'],
+    image: require('@/assets/images/fronts/ogum.png')
   },
-  {
-    id: '3',
-    name: 'Água com Sal',
-    subtitle: 'Banho de Limpeza',
-    description: 'Banho purificador com sal grosso e ervas.',
-    method:
-      'Tome banho com água e sal grosso, do pescoço para baixo, em sentido descendente.',
-    benefits:
-      'Limpeza espiritual, remoção de energias negativas e renovação energética.',
-    image: 'https://images.pexels.com/photos/4207793/pexels-photo-4207793.jpeg',
+  { 
+    id: '3', 
+    name: 'Iansã', 
+    description: 'Senhora dos ventos e tempestades, dona dos raios e do fogo.',
+    orixas: ['Iansã', 'Iyá Mapô', 'Oyá'],
+    attributes: ['Força', 'Coragem', 'Transformação'],
+    image: require('@/assets/images/fronts/iansa.png')
   },
-  {
-    id: '4',
-    name: 'Ervas de Banho',
-    subtitle: 'Purificação Pessoal',
-    description: 'Banho com ervas específicas para limpeza espiritual.',
-    method: 'Faça um chá com as ervas e use no banho, do pescoço para baixo.',
-    benefits: 'Limpeza energética, renovação e proteção espiritual.',
-    image: 'https://images.pexels.com/photos/4207794/pexels-photo-4207794.jpeg',
+  { 
+    id: '4', 
+    name: 'Xangô', 
+    description: 'O rei da justiça, senhor do trovão e da pedreira.',
+    orixas: ['Xangô', 'Xangô Agodô', 'Xangô Aganjú'],
+    attributes: ['Justiça', 'Equilíbrio', 'Poder'],
+    image: require('@/assets/images/fronts/xango.png')
   },
-  {
-    id: '5',
-    name: 'Incenso',
-    subtitle: 'Purificação do Ambiente',
-    description: 'Uso de incensos para limpeza energética.',
-    method: 'Acenda o incenso e deixe a fumaça circular pelo ambiente.',
-    benefits:
-      'Purificação do ambiente, elevação vibratória e limpeza energética.',
-    image: 'https://images.pexels.com/photos/4207795/pexels-photo-4207795.jpeg',
+  { 
+    id: '5', 
+    name: 'Odé', 
+    description: 'O caçador e provedor, senhor das matas e da fartura.',
+    orixas: ['Oxóssi', 'Oxóssi Odé', 'Oxóssi Inlê'],
+    attributes: ['Prosperidade', 'Sustento', 'Sorte'],
+    image: require('@/assets/images/fronts/ode.png')
   },
-  {
-    id: '6',
-    name: 'Cristais',
-    subtitle: 'Proteção e Limpeza',
-    description: 'Uso de cristais para limpeza e proteção energética.',
-    method:
-      'Posicione os cristais nos cantos do ambiente ou carregue-os consigo.',
-    benefits: 'Proteção, limpeza energética e equilíbrio das energias.',
-    image: 'https://images.pexels.com/photos/4207796/pexels-photo-4207796.jpeg',
+  { 
+    id: '6', 
+    name: 'Otim', 
+    description: 'O orixá da caça e da fartura, guardião das matas e dos animais.',
+    orixas: ['Otim', 'Oxóssi Otim'],
+    attributes: ['Fartura', 'Prosperidade', 'Sustento'],
+    image: require('@/assets/images/fronts/otim.png')
   },
+  { 
+    id: '7', 
+    name: 'Obá', 
+    description: 'A guerreira das águas revoltas, senhora da força e da resistência.',
+    orixas: ['Obá', 'Obá Igbonã', 'Obá Níla'],
+    attributes: ['Força', 'Coragem', 'Determinação'],
+    image: require('@/assets/images/fronts/oba.png')
+  },
+  { 
+    id: '8', 
+    name: 'Xapanã', 
+    description: 'O senhor das doenças e da cura, orixá da terra e da saúde.',
+    orixas: ['Xapanã', 'Omolu', 'Obaluaê'],
+    attributes: ['Cura', 'Transformação', 'Renovação'],
+    image: require('@/assets/images/fronts/xapana.png')
+  },
+  { 
+    id: '9', 
+    name: 'Ibeji', 
+    description: 'Os gêmeos divinos, representação da alegria e da inocência.',
+    orixas: ['Ibeji', 'Cosme', 'Damião'],
+    attributes: ['Alegria', 'Inocência', 'Brinquedos'],
+    image: require('@/assets/images/fronts/ibeji.png')
+  },
+  { 
+    id: '10', 
+    name: 'Oxum', 
+    description: 'A rainha das águas doces, senhora do ouro e do amor.',
+    orixas: ['Oxum', 'Oxum Ipondá', 'Oxum Ijimú'],
+    attributes: ['Amor', 'Beleza', 'Riqueza'],
+    image: require('@/assets/images/fronts/oxum.png')
+  },
+  { 
+    id: '11', 
+    name: 'Iemanjá', 
+    description: 'A rainha do mar, mãe de todos os orixás, senhora das águas salgadas.',
+    orixas: ['Iemanjá', 'Iemanjá Ogunté', 'Iemanjá Dandalunda'],
+    attributes: ['Amor', 'Proteção', 'Fertilidade'],
+    image: require('@/assets/images/fronts/iemanja.png')
+  },
+  { 
+    id: '12', 
+    name: 'Oxalá', 
+    description: 'O grande pai da Umbanda, senhor da criação e da paz.',
+    orixas: ['Oxalá', 'Oxaguiã', 'Oxalufã'],
+    attributes: ['Paz', 'Harmonia', 'Sabedoria'],
+    image: require('@/assets/images/fronts/oxala.png')
+  }
 ];
 
-const { width } = Dimensions.get('window');
-const CARD_MARGIN = 8; // Margem entre os itens
-const CARD_WIDTH = (width - CARD_MARGIN * 4) / 3; // 3 itens por linha com margens laterais
+// Componente de card de frente
+const FrenteCard = ({ item, onPress }: { item: FrenteItem, onPress: (item: FrenteItem) => void }) => (
+  <TouchableOpacity 
+    style={styles.herbCard}
+    onPress={() => onPress(item)}
+  >
+    <View style={styles.herbImageContainer}>
+      <Image 
+        source={item.image} 
+        style={styles.herbImage}
+        resizeMode="contain"
+      />
+    </View>
+    <Text style={styles.herbTitle} numberOfLines={1}>
+      {item.name}
+    </Text>
+  </TouchableOpacity>
+);
 
-interface FrenteCardProps {
-  item: FrenteItem;
-  onPress: (item: FrenteItem) => void;
+export default function FrentesScreen() {
+  const router = useRouter();
+  const navigation = useNavigation<DrawerNavigationProp<RootStackParamList>>();
+  const { user } = useAuth();
+
+  const handleFrentePress = (frente: FrenteItem) => {
+    // Determina qual página de detalhes deve ser aberta com base no nome da frente
+    const detailPage = frente.name === 'Xapanã' 
+      ? 'xapana_detail' 
+      : 'bara_detail';
+      
+    router.push({
+      pathname: `/(tabs)/fronts_detail/${detailPage}` as any,
+      params: { id: frente.id, name: frente.name }
+    } as any);
+  };
+
+  const handleAddFrente = () => {
+    // Navegar para a tela de adicionar nova frente
+    router.push('/(tabs)/add_frente' as any);
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Cabeçalho */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            <MaterialIcons name="blur-on" size={34} color="#fff" style={{ marginLeft: 16 }} />
+          </TouchableOpacity>
+        </View>
+        
+        <View style={styles.headerCenter}>
+          <Text style={styles.headerCenterText}>Ylê Axé</Text>
+          <Text style={styles.headerCenterSubtext}>Xangô & Oxum</Text>
+        </View>
+        
+        <View style={styles.headerIcons}>
+          <Image 
+            source={require('@/assets/images/profile/user.jpg')} 
+            style={styles.avatar} 
+          />
+        </View>
+      </View>
+
+      {/* Saudação e título */}
+      <View style={styles.titlesContainer}>
+        <View style={styles.titlesText}>
+          <View style={styles.titleContainer}>
+            <TouchableOpacity 
+              onPress={() => router.back()}
+              style={styles.backButton}
+            >
+              <MaterialIcons name="navigate-before" size={28} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Frentes</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Conteúdo principal */}
+      <View style={styles.content}>
+        <ScrollView 
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.section}>
+            <View style={styles.menuGrid}>
+              {FRENTES
+                .sort((a, b) => {
+                  // Ordem específica definida manualmente
+                  const order = [
+                    'Bará', 'Ogum', 'Iansã', 'Xangô', 'Odé', 
+                    'Otim', 'Obá', 'Xapanã', 'Ibeji', 'Oxum', 
+                    'Iemanjá', 'Oxalá'
+                  ];
+                  return order.indexOf(a.name) - order.indexOf(b.name);
+                })
+                .map((frente) => (
+                  <FrenteCard 
+                    key={frente.id} 
+                    item={frente} 
+                    onPress={handleFrentePress} 
+                  />
+                ))
+              }
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+
+      {user?.role === 'admin' || user?.role === 'superadmin' ? (
+        <FloatingActionButton 
+          icon="add" 
+          onPress={handleAddFrente}
+          style={styles.fab}
+        />
+      ) : null}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#006B3F',
+    borderRadius: 30,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    paddingTop: 8,
-    backgroundColor: '#121212',
+    paddingVertical: 60,
+    backgroundColor: '#006B3F',
   },
   headerLeft: {
-    width: 40,
+    flex: 1,
+    paddingLeft: 16,
   },
   headerCenter: {
-    flex: 1,
+    flex: 2,
     alignItems: 'center',
   },
-  headerRight: {
-    width: 40,
-  },
-  headerTitleSmall: {
+  headerCenterText: {
+    fontSize: 22,
     color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_600SemiBold',
   },
-  headerSubtitleTiny: {
-    color: '#888',
-    fontSize: 14,
+  headerCenterSubtext: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontFamily: 'Poppins_400Regular',
+  },
+  headerIcons: {
+    flex: 1,
+    alignItems: 'flex-end',
+    paddingRight: 30,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   titlesContainer: {
+    paddingTop: 0,
+    paddingHorizontal: 30,
+    paddingBottom: 70, // Reduzido para compensar a remoção da data
+    backgroundColor: '#006B3F',
+  },
+  titlesText: {},
+  titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 16,
   },
-  titlesText: {
-    flex: 1,
-    marginLeft: 8,
+  backButton: {
+    marginRight: 0,
+    marginLeft: -10,
+    marginTop: -10,
   },
-  headerTitleLarge: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  headerTitle: {
+    fontSize: 22,
     color: '#fff',
-  },
-  headerSubtitleMedium: {
-    fontSize: 14,
-    color: '#9E9E9E',
+    fontFamily: 'Poppins_600SemiBold',
+    marginTop: -10, // Movendo o título para cima
+    marginBottom: 4,
   },
   content: {
     flex: 1,
-    paddingHorizontal: 8,
-  },
-  frenteCard: {
-    width: CARD_WIDTH,
-    backgroundColor: '#1E1E1E',
-    borderRadius: 12,
-    margin: CARD_MARGIN / 2,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
     overflow: 'hidden',
-    padding: 8,
+    marginTop: -50, // Aumenta a sobreposição para cima
+    paddingTop: 20, // Compensa o margin negativo
+  },
+  scrollView: {
+    flex: 1,
+  },
+  section: {
+    padding: 16,
+  },
+  menuGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  herbCard: {
+    width: CARD_WIDTH,
+    backgroundColor: 'transparent',
+    borderRadius: 12,
+    marginBottom: CARD_MARGIN,
     alignItems: 'center',
+    justifyContent: 'center',
+    padding: 0,
   },
-  frenteImage: {
+  herbImageContainer: {
     width: '100%',
-    height: 80,
+    aspectRatio: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 8,
-    marginBottom: 8,
+    marginBottom: -20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
   },
-  frenteName: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#FFFFFF',
+  herbImage: {
+    width: '80%',
+    height: '80%',
+  },
+  herbTitle: {
+    fontSize: 14,
+    color: '#333',
+    fontFamily: 'Poppins_600SemiBold',
     textAlign: 'center',
+    padding: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 8,
+    width: '100%',
+    overflow: 'hidden',
   },
-  frenteSubtitle: {
+  fab: {
+    position: 'absolute',
+    right: 16,
+    bottom: 24,
+    zIndex: 1000,
+  },
+  moreText: {
     fontSize: 10,
-    color: '#9E9E9E',
-    textAlign: 'center',
-  },
-  frontsGrid: {
-    paddingBottom: 16,
+    color: '#1565C0',
+    fontWeight: '500',
   },
 });
-
-const FrenteCard: React.FC<FrenteCardProps> = ({ item, onPress }) => (
-  <TouchableOpacity style={styles.frenteCard} onPress={() => onPress(item)}>
-    <Image
-      source={{ uri: item.image }}
-      style={styles.frenteImage}
-      resizeMode="cover"
-    />
-    <Text style={styles.frenteName} numberOfLines={1}>
-      {item.name}
-    </Text>
-    <Text style={styles.frenteSubtitle} numberOfLines={1}>
-      {item.subtitle}
-    </Text>
-  </TouchableOpacity>
-);
-
-const FrentesScreen: React.FC = () => {
-  const router = useRouter();
-  const navigation = useNavigation();
-  const { width } = Dimensions.get('window');
-  
-  const handleCardPress = (item: FrenteItem) => {
-    console.log('Frente selecionada:', item);
-    // Exemplo: router.push(`/fronts/${item.id}`);
-  };
-
-  const toggleDrawer = () => {
-    navigation.dispatch(DrawerActions.toggleDrawer());
-  };
-
-  return (
-    <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <DrawerToggleButton tintColor="#fff" />
-        </View>
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerTitleLarge}>Frentes</Text>
-          <Text style={styles.headerSubtitleMedium}>Técnicas de Limpeza</Text>
-        </View>
-        <View style={styles.headerRight} />
-      </View>
-
-        {/* Conteúdo */}
-        <View style={styles.content}>
-          <FlatList
-            data={FRENTES}
-            renderItem={({ item }) => (
-              <FrenteCard item={item} onPress={handleCardPress} />
-            )}
-            keyExtractor={(item) => item.id}
-            numColumns={3}
-            contentContainerStyle={styles.frontsGrid}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-    </SafeAreaView>
-  );
-}
-
-export default FrentesScreen;
