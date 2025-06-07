@@ -1,0 +1,271 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "npm: install",
+      "type": "npm",
+      "script": "install",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "npm: start",
+      "type": "npm",
+      "script": "start",
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting packager...",
+          "endsPattern": "Ready"
+        }
+      }
+    },
+    {
+      "label": "npm: android",
+      "type": "npm",
+      "script": "android",
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": ["npm: start"]
+    },
+    {
+      "label": "npm: ios",
+      "type": "npm",
+      "script": "ios",
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": ["npm: start"]
+    },
+    {
+      "label": "npm: web",
+      "type": "npm",
+      "script": "web",
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": ["npm: start"]
+    },
+    {
+      "label": "npm: lint",
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "group": "test",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "npm: test",
+      "type": "npm",
+      "script": "test",
+      "problemMatcher": ["$tsc", "$jest"],
+      "group": "test",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "npm: build",
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": ["$tsc"],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Debug Android",
+      "type": "shell",
+      "command": "npx expo start --clear --android",
+      "problemMatcher": [],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Debug iOS",
+      "type": "shell",
+      "command": "npx expo start --clear --ios",
+      "problemMatcher": [],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Debug in Exponent",
+      "type": "shell",
+      "command": "npx expo start --clear",
+      "problemMatcher": [],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Debug in Web",
+      "type": "shell",
+      "command": "npx expo start --web",
+      "problemMatcher": [],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "TypeScript: Watch",
+      "type": "typescript",
+      "tsconfig": "tsconfig.json",
+      "option": "watch",
+      "problemMatcher": ["$tsc-watch"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "TypeScript: Build",
+      "type": "typescript",
+      "tsconfig": "tsconfig.json",
+      "problemMatcher": ["$tsc"],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "ESLint: Fix all auto-fixable problems",
+      "type": "shell",
+      "command": "npx eslint . --ext .js,.jsx,.ts,.tsx --fix",
+      "problemMatcher": ["$eslint-stylish"],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Prettier: Format Document",
+      "type": "shell",
+      "command": "npx prettier --write ${file}",
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Prettier: Format All Files",
+      "type": "shell",
+      "command": "npx prettier --write .",
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Clean Project",
+      "type": "shell",
+      "command": "npx expo start -c && watchman watch-del-all && rm -rf $TMPDIR/react-* && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-*",
+      "problemMatcher": [],
+      "group": "none",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Install Pods",
+      "type": "shell",
+      "command": "cd ios && pod install && cd ..",
+      "problemMatcher": [],
+      "group": "none",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Build Android",
+      "type": "shell",
+      "command": "cd android && ./gradlew clean && cd .. && npx react-native run-android --variant=release",
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Build iOS",
+      "type": "shell",
+      "command": "cd ios && xcodebuild -workspace MyApp.xcworkspace -scheme MyApp -configuration Release -sdk iphoneos -archivePath $PWD/build/MyApp.xcarchive archive && xcodebuild -exportArchive -archivePath $PWD/build/MyApp.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath $PWD/build -allowProvisioningUpdates && cd ..",
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    }
+  ]
+}

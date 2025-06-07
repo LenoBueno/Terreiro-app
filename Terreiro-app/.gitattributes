@@ -1,0 +1,107 @@
+# Configurações de final de linha
+* text=auto eol=lf
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+
+# Arquivos binários que devem permanecer como estão
+*.{png,jpg,jpeg,gif,ico,icns,webp} binary
+*.{eot,ttf,otf,woff,woff2} binary
+*.{a,dll,so,dylib,framework} binary
+*.{exe,app,dmg,pkg,msi} binary
+
+# Arquivos de projeto
+*.sln text eol=crlf
+*.{csproj,vcxproj,vcxitems,shproj} text eol=crlf
+*.{xml,config,props,targets} text eol=lf
+
+# Arquivos de configuração
+.editorconfig text eol=lf
+.eslintrc.js text eol=lf
+.prettierrc text eol=lf
+babel.config.js text eol=lf
+metro.config.js text eol=lf
+
+# Documentação
+*.md text eol=lf
+*.mdx text eol=lf
+*.txt text eol=lf
+
+# Shell
+*.sh text eol=lf
+
+# Git
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.gitmodules text eol=lf
+
+# Yarn
+.yarnrc text eol=lf
+
+# Docker
+Dockerfile* text eol=lf
+.dockerignore text eol=lf
+
+# Configurações do VS Code
+.vscode/* text eol=lf
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Configurações do Android Studio
+*.iml text eol=lf
+.idea/workspace.xml text eol=lf
+.idea/modules.xml text eol=lf
+.idea/misc.xml text eol=lf
+.idea/vcs.xml text eol=lf
+.idea/runConfigurations/* text eol=lf
+
+# Configurações do Xcode
+*.pbxuser text eol=lf
+*.mode1v3 text eol=lf
+*.mode2v3 text eol=lf
+*.perspectivev3 text eol=lf
+*.xcworkspacedata text eol=lf
+*.xcscheme text eol=lf
+*.xcsettings text eol=lf
+*.xcuserstate text eol=lf
+*.xcworkspace text eol=lf directory
+
+# Configurações do macOS
+.DS_Store binary
+.AppleDouble binary
+.LSOverride binary
+
+# Configurações do Windows
+Thumbs.db binary
+ehthumbs.db binary
+Desktop.ini binary
+
+# Configurações do diretório
+*.* text eol=lf
+* text=auto
+
+# Forçar arquivos específicos para LF
+*.{js,jsx,ts,tsx,json,css,scss,less,html,htm,vue} text eol=lf
+
+# Forçar arquivos específicos para CRLF
+*.{cmd,bat} text eol=crlf
+
+# Arquivos que não devem ser normalizados
+package-lock.json binary
+*.svg binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.mp3 binary
+*.wav binary
+*.mp4 binary
+*.webm binary
+*.mov binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.7z binary

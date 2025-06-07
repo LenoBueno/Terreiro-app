@@ -1,0 +1,82 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    /* Emit */
+    "noEmit": false,
+    "removeComments": true,
+    "sourceMap": false,
+    "inlineSources": false,
+    "declaration": true,
+    "declarationMap": false,
+    "outDir": "./dist",
+    
+    /* Type Checking */
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": false,
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    
+    /* Module Resolution */
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    
+    /* JavaScript Support */
+    "allowJs": true,
+    "checkJs": true,
+    
+    /* Emit */
+    "jsx": "react-native",
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    
+    /* Paths */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./"],
+      "@/components/*": ["./components/*"],
+      "@/screens/*": ["./app/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/contexts/*": ["./contexts/*"],
+      "@/constants/*": ["./constants/*"],
+      "@/types/*": ["./types/*"],
+      "@/utils/*": ["./utils/*"],
+      "@/assets/*": ["./assets/*"],
+      "@/navigation/*": ["./navigation/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.d.ts",
+    "./global.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/__tests__/*",
+    "**/__mocks__/*",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.stories.tsx",
+    "**/dist/**",
+    "**/build/**"
+  ]
+}

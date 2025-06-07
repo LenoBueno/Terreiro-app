@@ -4,6 +4,8 @@
 
 // Componentes básicos do React Native para construção da interface
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { useMemo } from 'react';
+import { Header } from '@/components/Header';
 // Hook personalizado para gerenciar autenticação do usuário
 import { useAuth } from '@/hooks/useAuth';
 // Biblioteca de ícones do Material Design
@@ -40,7 +42,7 @@ const menuItems: MenuItem[] = [
     icon: 'spa', // Ícone do MaterialIcons
     color: '#4CAF50', // Cor de destaque
     route: '/(tabs)/herbs', // Rota de navegação
-    image: require('@/assets/images/home/ervas.png') // Imagem local
+    image: require('../../assets/images/home/ervas.png') // Imagem local
   },
   { 
     id: '2',
@@ -48,7 +50,7 @@ const menuItems: MenuItem[] = [
     icon: 'account-balance',
     color: '#2196F3',
     route: '/(tabs)/fronts',
-    image: require('@/assets/images/home/frentes.png')
+    image: require('../../assets/images/home/frentes.png')
   },
   { 
     id: '3',
@@ -56,7 +58,7 @@ const menuItems: MenuItem[] = [
     icon: 'menu-book',
     color: '#9C27B0',
     route: '/(tabs)/reading',
-    image: require('@/assets/images/home/leitura.png')
+    image: require('../../assets/images/home/leitura.png')
   },
   { 
     id: '4',
@@ -64,7 +66,7 @@ const menuItems: MenuItem[] = [
     icon: 'event',
     color: '#FF5722',
     route: '/(tabs)/events',
-    image: require('@/assets/images/home/eventos.png')
+    image: require('../../assets/images/home/eventos.png') // TODO: Replace with eventos.png when available
   },
   { 
     id: '5',
@@ -72,7 +74,15 @@ const menuItems: MenuItem[] = [
     icon: 'bathtub',
     color: '#00BCD4',
     route: '/(tabs)/baths',
-    image: require('@/assets/images/home/banhos.webp')
+    image: require('../../assets/images/home/banhos.webp')
+  },
+  { 
+    id: '6',
+    title: 'Limpeza',
+    icon: 'cleaning-services',
+    color: '#00BCD4',
+    route: '/(tabs)/cleaning',
+    image: require('../../assets/images/home/limpeza.png')
   },
 ];
 
@@ -101,8 +111,17 @@ export default function HomeScreen() {
   const year = currentDate.getFullYear(); // Ano com 4 dígitos
   const formattedDate = `${day}/${month}/${year}`; // Data formatada
   
-  // Extrai o primeiro nome do usuário ou usa 'Visitante' como valor padrão
+    // Extrai o primeiro nome do usuário ou usa 'Visitante' como valor padrão
   const userName = user?.name?.split(' ')[0] || 'Visitante'; // Nome do usuário ou 'Visitante'
+
+
+  // Itens recentes para exibição
+  const recentItems = useMemo(() => [
+    menuItems[0], // Ervas
+    menuItems[5], // Limpeza
+    menuItems[3], // Eventos
+    menuItems[4], // Banhos
+  ], []);
 
   /**
    * Manipula o clique em um card de navegação
@@ -167,7 +186,7 @@ export default function HomeScreen() {
       <View style={styles.titlesContainer}>
         <View style={styles.titlesText}>
           {/* Saudação personalizada com o nome do usuário */}
-          <Text style={styles.headerTitle}>Bem-vindo, {userName}</Text>
+          <Text style={styles.headerTitle}>Bem-vindo, {userName}!</Text>
           {/* Exibe a data atual formatada */}
           <Text style={styles.headerSubtitle}>{formattedDate}</Text>
         </View>
@@ -226,17 +245,17 @@ export default function HomeScreen() {
               showsHorizontalScrollIndicator={false} // Esconde a barra de rolagem horizontal
               contentContainerStyle={styles.recentItemsContainer}
             >
-              {/* Mapeia os itens recentes (usando os mesmos itens do menu) */}
-              {menuItems.map((item, index) => (
+              {/* Mapeia os itens recentes da lista recentItems */}
+              {recentItems.map((item) => (
                 <TouchableOpacity 
-                  key={`recent-${index}`} 
+                  key={`recent-${item.id}`} 
                   style={styles.recentItem}
                   onPress={() => handleCardPress(item.route)}
                 >
                   <View style={styles.recentItemIcon}>
                     <Image 
                       source={item.image} 
-                      style={styles.recentItemImage} 
+                      style={styles.recentItemImage}
                       resizeMode="contain"
                     />
                   </View>

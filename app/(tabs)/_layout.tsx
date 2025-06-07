@@ -6,7 +6,7 @@ type ScreenConfig = {
   options?: object;
 };
 
-const screens: ScreenConfig[] = [
+const screens: (ScreenConfig | string)[] = [
   { name: 'index' },
   { name: 'herbs' },
   { name: 'fronts' },
@@ -21,6 +21,8 @@ const screens: ScreenConfig[] = [
   { name: 'settings' },
   { name: 'superadmin' },
   { name: 'users' },
+  // Dynamic routes for herb details
+  'herb_detail/lavender_detail',
 ];
 
 export default function AppLayout() {
@@ -30,13 +32,18 @@ export default function AppLayout() {
     <Stack screenOptions={{
       headerShown: false,
     }}>
-      {screens.map((screen) => (
-        <Stack.Screen
-          key={screen.name}
-          name={screen.name as any}
-          options={screen.options || {}}
-        />
-      ))}
+      {screens.map((screen) => {
+        if (typeof screen === 'string') {
+          return <Stack.Screen key={screen} name={screen as any} />;
+        }
+        return (
+          <Stack.Screen
+            key={screen.name}
+            name={screen.name as any}
+            options={screen.options || {}}
+          />
+        );
+      })}
     </Stack>
   );
 }

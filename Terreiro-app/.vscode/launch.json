@@ -1,0 +1,76 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Android",
+      "cwd": "${workspaceFolder}",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "android:dev"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Debug iOS",
+      "cwd": "${workspaceFolder}",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "ios:dev"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Debug Web",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:19006",
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack://*": "${webRoot}/*"
+      }
+    },
+    {
+      "name": "Debug Jest Tests",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+      "args": [
+        "--config",
+        "jest.config.js",
+        "--runInBand",
+        "--watchAll=false"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/**/*.js"]
+    },
+    {
+      "name": "Attach to Metro",
+      "type": "node",
+      "request": "attach",
+      "port": 8081,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/**/*.js"],
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug All Tests",
+      "configurations": ["Debug Jest Tests"]
+    },
+    {
+      "name": "Debug Android + Metro",
+      "configurations": ["Debug Android", "Attach to Metro"]
+    },
+    {
+      "name": "Debug iOS + Metro",
+      "configurations": ["Debug iOS", "Attach to Metro"]
+    }
+  ]
+}

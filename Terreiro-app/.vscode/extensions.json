@@ -1,0 +1,45 @@
+{
+  // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=827846
+  "recommendations": [
+    // Extensões para React Native
+    "msjsdiag.vscode-react-native",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "ms-vscode.vscode-typescript-next",
+    "ms-vscode.vscode-typescript-tslint-plugin",
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-portuguese-brazilian",
+    "editorconfig.editorconfig",
+    "bradlc.vscode-tailwindcss",
+    "naumovs.color-highlight",
+    "wix.vscode-import-cost",
+    "wix.glean",
+    "jpoissonnier.vscode-styled-components",
+    "pflannery.vscode-versionlens",
+    "eamodio.gitlens",
+    "wakatime.vscode-wakatime",
+    "visualstudioexptteam.vscodeintellicode",
+    "wayou.vscode-todo-highlight",
+    "gruntfuggly.todo-tree",
+    "firsttris.vscode-jest-runner",
+    "orta.vscode-jest",
+    "ms-azure-devops.azure-pipelines",
+    "ms-azure-devops.azure-pipelines-tasks",
+    "ms-vscode.azure-account",
+    "ms-azuretools.vscode-docker",
+    "ms-vscode-remote.remote-containers",
+    "ms-vscode-remote.remote-ssh",
+    "ms-vscode-remote.remote-ssh-edit",
+    "ms-vscode-remote.remote-wsl",
+    "ms-vscode-remote.vscode-remote-extensionpack",
+    "ms-vsliveshare.vsliveshare",
+    "ms-vsliveshare.vsliveshare-audio",
+    "ms-vsliveshare.vsliveshare-pack",
+    "ms-vsliveshare.vsliveshareaudio"
+  ],
+  "unwantedRecommendations": [
+    "hookyqr.beautify",
+    "dbaeumer.jshint",
+    "ms-vscode.vscode-typescript-tslint-plugin"
+  ]
+}

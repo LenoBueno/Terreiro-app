@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -16,8 +16,9 @@ import { useRouter } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Header } from '@/components/Header';
 
-type CleaningItem = {
+interface CleaningItem {
   id: string;
   name: string;
   subtitle: string;
@@ -25,7 +26,9 @@ type CleaningItem = {
   method: string;
   benefits: string;
   image: string;
-};
+}
+
+
 
 const CLEANINGS = [
   {
@@ -80,82 +83,52 @@ const CleaningCard = ({
       style={styles.cleaningImage}
       resizeMode="cover"
     />
-    <Text style={styles.cleaningName} numberOfLines={2}>
+    <Text style={[styles.cleaningName]} numberOfLines={2}>
       {item.name}
     </Text>
   </TouchableOpacity>
 );
 
-
-
 export default function CleaningScreen() {
   const router = useRouter();
   const navigation = useNavigation<DrawerNavigationProp<any>>();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    // Aqui você pode adicionar a lógica de refresh
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   const handleCardPress = (item: CleaningItem) => {
     // Aqui você pode adicionar a lógica para abrir os detalhes do item
     console.log('Item selecionado:', item);
   };
 
-  const handleBackPress = () => {
-    navigation.navigate('(tabs)');
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <TouchableOpacity onPress={() => (navigation as any).openDrawer()}>
-              <MaterialIcons
-                name="blur-on"
-                size={34}
-                color="#fff"
-                style={{ marginLeft: 16 }}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.headerIcons}>
-            <Image
-              source={{
-                uri: 'https://randomuser.me/api/portraits/women/44.jpg',
-              }}
-              style={styles.avatar}
-            />
-          </View>
-        </View>
-
-        {/* Títulos */}
-        <View style={styles.titlesContainer}>
-          <TouchableOpacity onPress={handleBackPress}>
-            <MaterialIcons
-              name="chevron-left"
-              size={30}
-              color="#fff"
-              style={{ marginLeft: 1 }}
-            />
-          </TouchableOpacity>
-          <View style={styles.titlesText}>
-            <Text style={styles.headerTitle}>Limpezas</Text>
-            <Text style={styles.headerSubtitle}>Técnicas de Limpeza</Text>
-          </View>
-        </View>
-
-        {/* Conteúdo */}
-        <View style={styles.content}>
-          <FlatList
-            data={CLEANINGS}
-            renderItem={({ item }) => (
-              <CleaningCard item={item} onPress={handleCardPress} />
-            )}
-            keyExtractor={(item) => item.id}
-            numColumns={3}
-            contentContainerStyle={styles.cleaningGrid}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-      </SafeAreaView>
+      <Header title="Limpezas" showBackButton />
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <FlatList
+          data={CLEANINGS}
+          renderItem={({ item }) => (
+            <CleaningCard item={item} onPress={handleCardPress} />
+          )}
+          keyExtractor={(item) => item.id}
+          numColumns={3}
+          contentContainerStyle={styles.cleaningGrid}
+          showsVerticalScrollIndicator={false}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -164,71 +137,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#006B3F',
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginLeft: 10,
-  },
-  titlesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-  },
-  titlesText: {
-    marginLeft: 16,
-  },
-  headerTitle: {
-    fontSize: 24,
-    color: '#fff',
-    fontFamily: 'Poppins_600SemiBold',
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontFamily: 'Poppins_400Regular',
-  },
   content: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 8,
-  },
-  cleaningGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    padding: 4,
+    padding: 16,
   },
   cleaningCard: {
     width: CARD_WIDTH,
     margin: CARD_MARGIN,
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 8,
     overflow: 'hidden',
-    elevation: 2,
+    elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   cleaningImage: {
     width: '100%',
-    height: CARD_WIDTH * 0.75,
+    height: 150,
   },
   cleaningName: {
     padding: 8,
@@ -237,17 +162,11 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
+  cleaningGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    padding: 4,
   },
   emptyText: {
     marginTop: 16,

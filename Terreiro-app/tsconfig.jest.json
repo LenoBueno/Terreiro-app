@@ -1,0 +1,30 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-native",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["jest", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./"],
+      "@/components/*": ["./components/*"],
+      "@/screens/*": ["./app/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/contexts/*": ["./contexts/*"],
+      "@/constants/*": ["./constants/*"],
+      "@/types/*": ["./types/*"],
+      "@/utils/*": ["./utils/*"],
+      "@/assets/*": ["./assets/*"],
+      "@/navigation/*": ["./navigation/*"]
+    }
+  },
+  "include": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "jest.setup.js"
+  ]
+}

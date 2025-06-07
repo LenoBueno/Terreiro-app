@@ -1,17 +1,58 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
+    /* Base Options */
+    "target": "esnext",
+    "lib": ["esnext", "dom"],
+    "jsx": "react-native",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "paths": {
-      "@/*": [
-        "./*"
-      ]
-    }
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsxImportSource": "react",
+    "allowJs": true,
+    "checkJs": true,
+    
+    /* Type Checking */
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "**/__tests__/*",
+    "**/__mocks__/*",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.stories.tsx",
+    "**/dist/**",
+    "**/build/**"
   ]
 }

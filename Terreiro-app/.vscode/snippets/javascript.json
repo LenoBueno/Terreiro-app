@@ -1,0 +1,377 @@
+{
+  "Console Log": {
+    "prefix": "cl",
+    "body": [
+      "console.log('${1:label}:', ${2:value});"
+    ],
+    "description": "Quick console.log statement"
+  },
+  "Console Error": {
+    "prefix": "ce",
+    "body": [
+      "console.error('${1:error}:', ${2:error});"
+    ],
+    "description": "Quick console.error statement"
+  },
+  "Try Catch Block": {
+    "prefix": "tryc",
+    "body": [
+      "try {",
+      "  ${1:code}",
+      "} catch (error) {",
+      "  console.error('${2:Error description}:', error);",
+      "  throw error;",
+      "}"
+    ],
+    "description": "Try catch block with error handling"
+  },
+  "Async Function": {
+    "prefix": "asyncf",
+    "body": [
+      "const ${1:functionName} = async (${2:params}) => {",
+      "  try {",
+      "    ${3:// code}",
+      "  } catch (error) {",
+      "    console.error('${4:Error in ${1:functionName}}:', error);",
+      "    throw error;",
+      "  }",
+      "};"
+    ],
+    "description": "Async function with try-catch"
+  },
+  "Promise": {
+    "prefix": "prom",
+    "body": [
+      "return new Promise((resolve, reject) => {",
+      "  ${1:// code}",
+      "  if (${2:condition}) {",
+      "    resolve(${3:result});",
+      "  } else {",
+      "    reject(new Error('${4:Error message}'));",
+      "  }",
+      "});"
+    ],
+    "description": "Promise wrapper"
+  },
+  "For Each Loop": {
+    "prefix": "fe",
+    "body": [
+      "${1:array}.forEach((${2:item}) => {",
+      "  ${3:// code}",
+      "});"
+    ],
+    "description": "For each loop"
+  },
+  "Map Function": {
+    "prefix": "map",
+    "body": [
+      "const ${1:newArray} = ${2:array}.map((${3:item}) => {",
+      "  return ${4:item};",
+      "});"
+    ],
+    "description": "Map function"
+  },
+  "Filter Function": {
+    "prefix": "fil",
+    "body": [
+      "const ${1:filtered} = ${2:array}.filter((${3:item}) => {",
+      "  return ${4:condition};",
+      "});"
+    ],
+    "description": "Filter function"
+  },
+  "Reduce Function": {
+    "prefix": "red",
+    "body": [
+      "const ${1:result} = ${2:array}.reduce((${3:accumulator}, ${4:current}) => {",
+      "  return ${5:accumulator + current};",
+      "}, ${6:initialValue});"
+    ],
+    "description": "Reduce function"
+  },
+  "Set Timeout": {
+    "prefix": "st",
+    "body": [
+      "setTimeout(() => {",
+      "  ${1:// code}",
+      "}, ${2:delay});"
+    ],
+    "description": "Set timeout"
+  },
+  "Set Interval": {
+    "prefix": "si",
+    "body": [
+      "const ${1:intervalId} = setInterval(() => {",
+      "  ${2:// code}",
+      "}, ${3:interval});",
+      "",
+      "// Don't forget to clearInterval(${1:intervalId}) when done"
+    ],
+    "description": "Set interval with cleanup reminder"
+  },
+  "Fetch API": {
+    "prefix": "fetch",
+    "body": [
+      "const fetchData = async () => {",
+      "  try {",
+      "    const response = await fetch('${1:url}');",
+      "    if (!response.ok) {",
+      "      throw new Error(`HTTP error! status: ${response.status}`);",
+      "    }",
+      "    const data = await response.json();",
+      "    return data;",
+      "  } catch (error) {",
+      "    console.error('Error fetching data:', error);",
+      "    throw error;",
+      "  }",
+      "};"
+    ],
+    "description": "Fetch API with async/await"
+  },
+  "Object Destructuring": {
+    "prefix": "od",
+    "body": [
+      "const { ${1:prop1}, ${2:prop2} } = ${3:object};"
+    ],
+    "description": "Object destructuring"
+  },
+  "Array Destructuring": {
+    "prefix": "ad",
+    "body": [
+      "const [${1:first}, ${2:second}] = ${3:array};"
+    ],
+    "description": "Array destructuring"
+  },
+  "Import Statement": {
+    "prefix": "imp",
+    "body": [
+      "import ${1:module} from '${2:path}';"
+    ],
+    "description": "ES6 import statement"
+  },
+  "Export Statement": {
+    "prefix": "exp",
+    "body": [
+      "export { ${1:name} };"
+    ],
+    "description": "ES6 export statement"
+  },
+  "Default Export": {
+    "prefix": "expd",
+    "body": [
+      "export default ${1:name};"
+    ],
+    "description": "ES6 default export"
+  },
+  "Class": {
+    "prefix": "cls",
+    "body": [
+      "class ${1:ClassName} {",
+      "  constructor(${2:params}) {",
+      "    ${3:// constructor code}",
+      "  }",
+      "",
+      "  ${4:methodName}(${5:params}) {",
+      "    ${6:// method code}",
+      "  }",
+      "}"
+    ],
+    "description": "Class definition"
+  },
+  "Getter Method": {
+    "prefix": "get",
+    "body": [
+      "get ${1:propertyName}() {",
+      "  return this.${2:property};",
+      "}"
+    ],
+    "description": "Getter method"
+  },
+  "Setter Method": {
+    "prefix": "set",
+    "body": [
+      "set ${1:propertyName}(${2:value}) {",
+      "  this.${3:property} = ${2:value};",
+      "}"
+    ],
+    "description": "Setter method"
+  },
+  "Arrow Function": {
+    "prefix": "af",
+    "body": [
+      "const ${1:functionName} = (${2:params}) => {",
+      "  ${3:// code}",
+      "};"
+    ],
+    "description": "Arrow function"
+  },
+  "Callback Function": {
+    "prefix": "cb",
+    "body": [
+      "function ${1:functionName}(${2:params}, callback) {",
+      "  ${3:// code}",
+      "  callback(${4:null}, ${5:result});",
+      "}"
+    ],
+    "description": "Callback function"
+  },
+  "Error First Callback": {
+    "prefix": "efc",
+    "body": [
+      "function ${1:functionName}(${2:params}, (error, ${3:result}) => {",
+      "  if (error) {",
+      "    console.error('${4:Error description}:', error);",
+      "    return;",
+      "  }",
+      "  ${5:// code}",
+      "});"
+    ],
+    "description": "Error first callback pattern"
+  },
+  "Module Exports": {
+    "prefix": "me",
+    "body": [
+      "module.exports = { ${1:name} };"
+    ],
+    "description": "CommonJS module exports"
+  },
+  "Require Statement": {
+    "prefix": "req",
+    "body": [
+      "const ${1:module} = require('${2:path}');"
+    ],
+    "description": "CommonJS require statement"
+  },
+  "JSON Stringify": {
+    "prefix": "js",
+    "body": [
+      "JSON.stringify(${1:object}, null, 2)"
+    ],
+    "description": "JSON.stringify with pretty print"
+  },
+  "JSON Parse": {
+    "prefix": "jp",
+    "body": [
+      "JSON.parse(${1:string})"
+    ],
+    "description": "JSON.parse"
+  },
+  "Object Property Shorthand": {
+    "prefix": "ops",
+    "body": [
+      "const ${1:obj} = { ${2:name} };"
+    ],
+    "description": "Object property shorthand"
+  },
+  "Object Method Shorthand": {
+    "prefix": "oms",
+    "body": [
+      "const ${1:obj} = {",
+      "  ${2:methodName}(${3:params}) {",
+      "    ${4:// code}",
+      "  }",
+      "};"
+    ],
+    "description": "Object method shorthand"
+  },
+  "Template Literal": {
+    "prefix": "tl",
+    "body": [
+      "`${${1:variable}}`"
+    ],
+    "description": "Template literal"
+  },
+  "Multi-line String": {
+    "prefix": "mls",
+    "body": [
+      "`${1:line 1}\n",
+      "${2:line 2}\n",
+      "${3:line 3}`"
+    ],
+    "description": "Multi-line string with template literal"
+  },
+  "Nullish Coalescing": {
+    "prefix": "nc",
+    "body": [
+      "${1:value} ?? ${2:defaultValue}"
+    ],
+    "description": "Nullish coalescing operator"
+  },
+  "Optional Chaining": {
+    "prefix": "oc",
+    "body": [
+      "${1:object}?.${2:property}"
+    ],
+    "description": "Optional chaining operator"
+  },
+  "Import React": {
+    "prefix": "imr",
+    "body": [
+      "import React from 'react';"
+    ],
+    "description": "Import React"
+  },
+  "Import React Native": {
+    "prefix": "imrn",
+    "body": [
+      "import { View, Text } from 'react-native';"
+    ],
+    "description": "Import React Native core components"
+  },
+  "Import PropTypes": {
+    "prefix": "impt",
+    "body": [
+      "import PropTypes from 'prop-types';"
+    ],
+    "description": "Import PropTypes"
+  },
+  "Import React Navigation": {
+    "prefix": "imrnv",
+    "body": [
+      "import { createStackNavigator } from '@react-navigation/stack';"
+    ],
+    "description": "Import React Navigation"
+  },
+  "Import Redux": {
+    "prefix": "imrdx",
+    "body": [
+      "import { createStore, applyMiddleware } from 'redux';\nimport { Provider } from 'react-redux';\nimport thunk from 'redux-thunk';\nimport rootReducer from './reducers';"
+    ],
+    "description": "Import Redux and related libraries"
+  },
+  "Import Axios": {
+    "prefix": "imax",
+    "body": [
+      "import axios from 'axios';"
+    ],
+    "description": "Import Axios"
+  },
+  "Import Lodash": {
+    "prefix": "imld",
+    "body": [
+      "import _ from 'lodash';"
+    ],
+    "description": "Import Lodash"
+  },
+  "Import Moment": {
+    "prefix": "imm",
+    "body": [
+      "import moment from 'moment';"
+    ],
+    "description": "Import Moment.js"
+  },
+  "Import Styled Components": {
+    "prefix": "imsc",
+    "body": [
+      "import styled from 'styled-components/native';"
+    ],
+    "description": "Import Styled Components for React Native"
+  },
+  "Import Vector Icons": {
+    "prefix": "imvi",
+    "body": [
+      "import Icon from 'react-native-vector-icons/MaterialIcons';"
+    ],
+    "description": "Import Vector Icons"
+  }
+}
