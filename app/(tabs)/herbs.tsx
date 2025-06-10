@@ -140,10 +140,18 @@ export default function HerbsScreen() {
   const userName = user?.name?.split(' ')[0] || 'Visitante';
 
   const handleHerbPress = (herb: HerbItem) => {
-    // Navigate to the herb detail screen with the herb's ID
-    // For now, all herbs will go to the lavender detail page
+    // Mapeia o ID da erva para o componente de detalhe correto
+    const herbDetailRoutes: Record<string, string> = {
+      '2': 'lavender_detail',    // Alfazema
+      '3': 'aroeira_detail',     // Aroeira
+      '9': 'cinnamon_detail',    // Canela
+      // Adicione mais mapeamentos conforme necessário
+    };
+
+    const detailRoute = herbDetailRoutes[herb.id] || 'lavender_detail';
+    
     router.push({
-      pathname: 'herb_detail/lavender_detail',
+      pathname: `herb_detail/${detailRoute}`,
       params: { id: herb.id }
     } as any);
   };

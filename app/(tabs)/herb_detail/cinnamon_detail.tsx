@@ -4,28 +4,28 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const HERB_DATA = {
-  id: '2',
-  name: 'Alfazema',
-  scientificName: 'Lavandula angustifolia',
-  description: ' A Alfazema, também conhecida\n como Lavanda, é amplamente\n reconhecida por suas propriedades\n calmantes e relaxantes. É uma das ervas\n mais populares na aromaterapia, sendo usada\n para aliviar o estresse e promover o bem-estar.',
+  id: '3',
+  name: 'Canela',
+  scientificName: 'Cinnamomum verum',
+  description: ' A Canela é uma especiaria\n altamente valorizada por suas\n propriedades medicinais e espirituais.\n Seu aroma quente e adocicado é conhecido por\n estimular a energia vital e promover a prosperidade.',
   uses: [
-    'Ação calmante e relaxante',
-    'Auxilia no alívio do estresse e ansiedade',
-    'Melhora a qualidade do sono',
-    'Antisséptico natural',
-    'Alívio de dores de cabeça',
-    'Repelente natural de insetos',
+    'Estimulante energético natural',
+    'Auxilia na digestão',
+    'Ação anti-inflamatória',
+    'Regulação dos níveis de açúcar no sangue',
+    'Fortalecimento do sistema imunológico',
+    'Ação antioxidante poderosa',
   ],
-  preparation: 'Para o banho, prepare um chá com 2 colheres de sopa de flores secas para 1 litro de água fervente. Deixe em infusão por 10 minutos, coe e adicione à água do banho morna. Para uso tópico, dilua algumas gotas de óleo essencial em um óleo carreador antes da aplicação na pele.',
-  benefits: 'O banho com alfazema promove relaxamento profundo, alivia tensões musculares, acalma a mente e equilibra as emoções. Na espiritualidade, é associada à purificação, proteção e elevação espiritual, ajudando a afastar energias negativas e promovendo a paz interior.',
-  category: 'Calmante e Relaxante',
-  energy: 'Yin (Feminina)',
-  element: 'Ar',
-  chakras: 'Coronário (Sahasrara) e Frontal (Ajna)',
-  image: require('@/assets/images/herbs/alfazema.png'),
+  preparation: 'Para banho, faça uma infusão com 3 pedaços de canela em pau para cada litro de água fervente. Deixe em infusão por 15 minutos, coe e adicione à água do banho. Para uso interno, utilize 1 colher de chá de canela em pó por xícara de água fervente, deixando em infusão por 10 minutos.',
+  benefits: 'O banho de canela é poderoso para ativar a energia vital, atrair prosperidade e afastar energias negativas. Na espiritualidade, é associada à proteção, sucesso e atração de boas energias, sendo frequentemente usada em rituais de purificação e atração de sorte.',
+  category: 'Energizante e Estimulante',
+  energy: 'Yang (Masculina)',
+  element: 'Fogo',
+  chakras: 'Raiz (Muladhara) e Plexo Solar (Manipura)',
+  image: require('@/assets/images/herbs/canela.png'),
 };
 
-export default function HerbDetailScreen() {
+export default function CinnamonDetailScreen() {
   const router = useRouter();
   const herb = HERB_DATA;
 
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: 'absolute',
-    top: 80,
+    top: 120,
     left: 170,
     right: 0,
     alignItems: 'center',
@@ -172,8 +172,8 @@ const styles = StyleSheet.create({
     elevation: 7,
   },
   herbImage: {
-    width: 350,
-    height: 350,
+    width: 280,
+    height: 280,
     resizeMode: 'contain',
     borderRadius: 8,
     backgroundColor: 'transparent',
@@ -201,9 +201,9 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: '#006B3F',
-    marginBottom: 8,
+    marginBottom: 12,
     fontFamily: 'Poppins_600SemiBold',
   },
   sectionText: {
@@ -225,8 +225,8 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     backgroundColor: '#006B3F',
-    marginTop: 10,
-    marginRight: 12,
+    marginTop: 8,
+    marginRight: 10,
   },
   useText: {
     flex: 1,
@@ -239,22 +239,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginHorizontal: -8,
-    marginTop: 8,
+    marginTop: 16,
   },
   infoItem: {
     width: '50%',
     padding: 8,
   },
   infoLabel: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#666',
     marginBottom: 4,
     fontFamily: 'Poppins_500Medium',
   },
   infoValue: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#006B3F',
-    fontWeight: '500',
-    fontFamily: 'Poppins_500Medium',
+    fontFamily: 'Poppins_600SemiBold',
   },
 });
