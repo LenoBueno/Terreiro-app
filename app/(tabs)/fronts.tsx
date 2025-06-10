@@ -6,6 +6,7 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootStackParamList } from '@/@types/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import FloatingActionButton from '@/components/common/FloatingActionButton';
+import Header from '@/components/Header';
 
 // Definição do tipo para os itens de frentes
 type FrenteItem = {
@@ -168,40 +169,16 @@ export default function FrentesScreen() {
   return (
     <View style={styles.container}>
       {/* Cabeçalho */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <MaterialIcons name="blur-on" size={34} color="#fff" style={{ marginLeft: 16 }} />
-          </TouchableOpacity>
-        </View>
-        
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerCenterText}>Ylê Axé</Text>
-          <Text style={styles.headerCenterSubtext}>Xangô & Oxum</Text>
-        </View>
-        
-        <View style={styles.headerIcons}>
+      <Header 
+        title="Frentes"
+        showBackButton={true}
+        rightComponent={
           <Image 
             source={require('@/assets/images/profile/user.jpg')} 
             style={styles.avatar} 
           />
-        </View>
-      </View>
-
-      {/* Saudação e título */}
-      <View style={styles.titlesContainer}>
-        <View style={styles.titlesText}>
-          <View style={styles.titleContainer}>
-            <TouchableOpacity 
-              onPress={() => router.back()}
-              style={styles.backButton}
-            >
-              <MaterialIcons name="navigate-before" size={28} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Frentes</Text>
-          </View>
-        </View>
-      </View>
+        }
+      />
 
       {/* Conteúdo principal */}
       <View style={styles.content}>
@@ -315,7 +292,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     overflow: 'hidden',
-    marginTop: -50, // Aumenta a sobreposição para cima
+    marginTop: 0, // Aumenta a sobreposição para cima
     paddingTop: 20, // Compensa o margin negativo
   },
   scrollView: {

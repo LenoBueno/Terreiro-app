@@ -6,6 +6,7 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootStackParamList } from '@/@types/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import FloatingActionButton from '@/components/common/FloatingActionButton';
+import Header from '@/components/Header';
 
 // Definição do tipo para os itens de ervas
 type HerbItem = {
@@ -159,41 +160,18 @@ export default function HerbsScreen() {
         icon="add"
         style={styles.fab}
       />
+      
       {/* Cabeçalho */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <MaterialIcons name="blur-on" size={34} color="#fff" style={{ marginLeft: 16 }} />
-          </TouchableOpacity>
-        </View>
-        
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerCenterText}>Ylê Axé</Text>
-          <Text style={styles.headerCenterSubtext}>Xangô & Oxum</Text>
-        </View>
-        
-        <View style={styles.headerIcons}>
+      <Header 
+        title="Ervas"
+        showBackButton={true}
+        rightComponent={
           <Image 
             source={require('@/assets/images/profile/user.jpg')} 
             style={styles.avatar} 
           />
-        </View>
-      </View>
-
-      {/* Saudação e data */}
-      <View style={styles.titlesContainer}>
-        <View style={styles.titlesText}>
-          <View style={styles.titleContainer}>
-            <TouchableOpacity 
-              onPress={() => router.back()}
-              style={styles.backButton}
-            >
-              <MaterialIcons name="navigate-before" size={28} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Ervas</Text>
-          </View>
-        </View>
-      </View>
+        }
+      />
       
       {/* Conteúdo principal */}
       <View style={styles.content}>
@@ -270,9 +248,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   titlesContainer: {
-    paddingTop: 0,
+    paddingTop: 16,
     paddingHorizontal: 30,
-    paddingBottom: 70, // Reduzido para compensar a remoção da data
+    paddingBottom: 20,
     backgroundColor: '#006B3F',
   },
   titlesText: {},
@@ -287,11 +265,10 @@ const styles = StyleSheet.create({
 
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 24,
     color: '#fff',
     fontFamily: 'Poppins_600SemiBold',
-    marginTop: -10, // Movendo o título para cima
-    marginBottom: 4,
+    marginVertical: 8,
   },
   headerSubtitle: {
     fontSize: 14,
@@ -304,8 +281,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     overflow: 'hidden',
-    marginTop: -50, // Aumenta a sobreposição para cima
-    paddingTop: 20, // Compensa o margin negativo
+    marginTop: 0,
+    paddingTop: 30,
   },
   scrollView: {
     flex: 1,

@@ -5,7 +5,8 @@
 // Componentes básicos do React Native para construção da interface
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useMemo } from 'react';
-import { Header } from '@/components/Header';
+import StandardPage from '@/components/templates/StandardPage';
+import ItemCard from '@/components/ItemCard';
 // Hook personalizado para gerenciar autenticação do usuário
 import { useAuth } from '@/hooks/useAuth';
 // Biblioteca de ícones do Material Design
@@ -28,7 +29,7 @@ const { width } = Dimensions.get('window');
 const CARD_MARGIN = 16;
 // Calcula a largura dos cards baseado no tamanho da tela e margens
 // Permite exibir 2 cards por linha com espaçamento adequado
-const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 2;
+const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 3;
 
 /**
  * Dados dos itens do menu principal
@@ -104,23 +105,18 @@ export default function HomeScreen() {
   // Hook para acessar o objeto de navegação do drawer
   const navigation = useNavigation<DrawerNavigationProp<RootStackParamList>>();
   
-  // Formata a data atual no formato DD/MM/AAAA
-  const currentDate = new Date();
-  const day = currentDate.getDate().toString().padStart(2, '0'); // Dia com 2 dígitos
-  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Mês com 2 dígitos
-  const year = currentDate.getFullYear(); // Ano com 4 dígitos
-  const formattedDate = `${day}/${month}/${year}`; // Data formatada
-  
-    // Extrai o primeiro nome do usuário ou usa 'Visitante' como valor padrão
+  // Extrai o primeiro nome do usuário ou usa 'Visitante' como valor padrão
   const userName = user?.name?.split(' ')[0] || 'Visitante'; // Nome do usuário ou 'Visitante'
 
 
-  // Itens recentes para exibição
+  // Itens recentes para exibição na ordem: Ervas, Frentes, Leitura, Eventos, Banhos e Limpeza
   const recentItems = useMemo(() => [
     menuItems[0], // Ervas
-    menuItems[5], // Limpeza
+    menuItems[1], // Frentes
+    menuItems[2], // Leitura
     menuItems[3], // Eventos
     menuItems[4], // Banhos
+    menuItems[5], // Limpeza
   ], []);
 
   /**
@@ -130,77 +126,39 @@ export default function HomeScreen() {
    * @returns {void}
    */
   const handleCardPress = (route: AppRoute): void => {
-    // Navega para a rota especificada
-    // O type assertion 'as any' é usado temporariamente para contornar
-    // limitações de tipagem do Expo Router
-    router.push(route as any);
+    try {
+      // Verifica se a rota existe antes de navegar
+      if (route && typeof route === 'string') {
+        // Navega para a rota especificada
+        // Usa um tipo mais genérico para evitar problemas de tipagem
+        const routePath = route as string;
+        router.push(routePath as any);
+      } else {
+        console.warn('Rota inválida:', route);
+      }
+    } catch (error) {
+      console.error('Erro ao navegar para a rota:', route, error);
+    }
   };
 
   return (
-    // Container principal da tela
-    <View style={styles.container}>
-      {/* 
-        Cabeçalho da aplicação
-        Contém o menu lateral, título central e ícones de ação
-      */}
-      <View style={styles.header}>
-        {/* Container do botão de menu lateral */}
-        <View style={styles.headerLeft}>
-          {/* Ícone de menu que abre o drawer de navegação */}
-          <TouchableOpacity 
-            onPress={() => {
-              // Usando o hook useNavigation para acessar o objeto de navegação
-              // e chamar o método openDrawer
-              navigation.openDrawer();
-            }}
-          >
-            <MaterialIcons 
-              name="blur-on" 
-              size={34} 
-              color="#fff" 
-              style={{ marginLeft: 16 }} 
-            />
-          </TouchableOpacity>
-        </View>
-        
-        {/* Área central do cabeçalho com o título do terreiro */}
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerCenterText}>Ylê Axé</Text>
-          <Text style={styles.headerCenterSubtext}>Xangô & Oxum</Text>
-        </View>
-        
-        {/* Container para o avatar do usuário */}
-        <View style={styles.headerIcons}>
-          {/* Avatar do usuário - poderia ser clicável para acessar o perfil */}
-          <Image 
-            source={require('@/assets/images/profile/user.jpg')} 
-            style={styles.avatar} 
-          />
-        </View>
-      </View>
-
-      {/* 
-        Seção de boas-vindas com nome do usuário e data atual 
-        Posicionada logo abaixo do cabeçalho
-      */}
-      <View style={styles.titlesContainer}>
-        <View style={styles.titlesText}>
-          {/* Saudação personalizada com o nome do usuário */}
-          <Text style={styles.headerTitle}>Bem-vindo, {userName}!</Text>
-          {/* Exibe a data atual formatada */}
-          <Text style={styles.headerSubtitle}>{formattedDate}</Text>
-        </View>
-      </View>
-
-      {/* 
-        Área de conteúdo principal da tela
-        Utiliza ScrollView para permitir rolagem quando o conteúdo for maior que a tela
-      */}
-      <View style={styles.content}>
-        <ScrollView 
-          style={styles.scrollView} 
-          showsVerticalScrollIndicator={false} // Esconde a barra de rolagem vertical
-        >
+    <StandardPage
+      title={`Bem-vindo, ${userName}!`}
+      showBackButton={false}
+      rightComponent={
+        <Image 
+          source={require('@/assets/images/profile/user.jpg')} 
+          style={styles.avatar} 
+        />
+      }
+      containerStyle={styles.container}
+      contentStyle={styles.content}
+    >
+      {/* Conteúdo principal */}
+      <ScrollView 
+        style={styles.scrollView} 
+        showsVerticalScrollIndicator={false}
+      >
           {/* 
             Seção do grid de cards de navegação 
             Exibe os principais recursos do aplicativo
@@ -209,20 +167,14 @@ export default function HomeScreen() {
             <View style={styles.menuGrid}>
               {/* Mapeia cada item do menu para criar um card */}
               {menuItems.map((item) => (
-                <TouchableOpacity 
-                  key={item.id} // Chave única para otimização de renderização
-                  style={styles.menuCard}
-                  onPress={() => handleCardPress(item.route)} // Navega ao clicar
-                >
-                  <View style={styles.menuCardContent}>
-                    <Image 
-                      source={item.image} 
-                      style={item.title === 'Eventos' ? styles.menuCardImageEvents : styles.menuCardImage} 
-                      resizeMode="contain" // Mantém a proporção da imagem
-                    />
-                  </View>
-                  <Text style={styles.menuCardText}>{item.title}</Text>
-                </TouchableOpacity>
+                <ItemCard
+                  key={item.id}
+                  title={item.title}
+                  image={item.image}
+                  onPress={() => handleCardPress(item.route)}
+                  // Estilo personalizado para o card de Eventos
+                  imageStyle={item.title === 'Eventos' ? styles.menuCardImageEvents : {}}
+                />
               ))}
             </View>
           </View>
@@ -239,12 +191,8 @@ export default function HomeScreen() {
                 <Text style={styles.seeAll}>Ver tudo</Text>
               </TouchableOpacity>
             </View>
-            {/* ScrollView horizontal para os itens recentes */}
-            <ScrollView 
-              horizontal 
-              showsHorizontalScrollIndicator={false} // Esconde a barra de rolagem horizontal
-              contentContainerStyle={styles.recentItemsContainer}
-            >
+            {/* Container para os itens recentes em linha */}
+            <View style={styles.recentItemsContainer}>
               {/* Mapeia os itens recentes da lista recentItems */}
               {recentItems.map((item) => (
                 <TouchableOpacity 
@@ -259,14 +207,15 @@ export default function HomeScreen() {
                       resizeMode="contain"
                     />
                   </View>
-                  <Text style={styles.recentItemText}>{item.title}</Text>
+                  <Text style={styles.recentItemText} numberOfLines={1}>
+                    {item.title}
+                  </Text>
                 </TouchableOpacity>
               ))}
-            </ScrollView>
+            </View>
           </View>
         </ScrollView>
-      </View>
-    </View>
+    </StandardPage>
   );
 }
 
@@ -282,73 +231,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#006B3F',
   },
   scrollView: {
-    flex: 1,
+    paddingHorizontal: 10,
+    paddingTop: 10,
   },
   content: {
     flex: 1,
     backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    padding: 20,
-    paddingTop: 30,
+    paddingTop: 20,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 50,
-    paddingHorizontal: 20,
-    backgroundColor: '#006B3F',
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 0,
-  },
-  headerCenter: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerCenterText: {
-    color: '#fff',
-    fontSize: 20,
-    fontFamily: 'Poppins_600SemiBold',
-    textAlign: 'center',
-  },
-  headerCenterSubtext: {
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontSize: 16,
-    fontFamily: 'Poppins_400Regular',
-    textAlign: 'center',
-    marginTop: 2,
-  },
-  headerIcon: {
-    marginLeft: 20,
-  },
-  titlesContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 30,
-  },
-  titlesText: {
-    marginTop: 20,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    fontFamily: 'Poppins_600SemiBold',
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontFamily: 'Poppins_400Regular',
-    marginTop: 4,
-  },
+
   menuGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -356,36 +247,11 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     marginHorizontal: '2.5%',
   },
-  menuCard: {
-    width: '30%',
-    marginBottom: 20,
-    alignItems: 'center',
-    marginHorizontal: '1.66%',
-  },
-  menuCardContent: {
-    width: 80,
-    height: 80,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  menuCardImage: {
-    width: 75,
-    height: 75,
-    resizeMode: 'contain',
-  },
-  // Estilo específico para a imagem de eventos
   menuCardImageEvents: {
     width: 85,
     height: 85,
     resizeMode: 'contain',
-    marginTop: -10, // Ajuste fino para centralizar verticalmente
-  },
-  menuCardText: {
-    fontSize: 18,
-    textAlign: 'center',
-    color: '#006B3F',
-    fontFamily: 'Poppins_500Medium',
+    marginTop: -10,
   },
   section: {
     marginTop: 15,
@@ -408,23 +274,28 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_500Medium',
   },
   recentItemsContainer: {
-    paddingRight: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingBottom: 15,
   },
   recentItem: {
-    marginRight: 10, // Aumentado de 15 para 20
     alignItems: 'center',
-    width: 80, // Aumentado de 70 para 80
+    width: '15%',
+    minWidth: 60,
+    marginBottom: 10,
   },
   recentItemIcon: {
-    width: 60, // Aumentado de 50 para 60
-    height: 60, // Aumentado de 50 para 60
+    width: 60,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: -3,
   },
   recentItemImage: {
-    width: 50, // Aumentado de 40 para 50
-    height: 50, // Aumentado de 40 para 50
+    width: 50,
+    height: 50,
     backgroundColor: 'transparent',
   },
   recentItemText: {
@@ -433,13 +304,9 @@ const styles = StyleSheet.create({
     color: '#006B3F',
     fontFamily: 'Poppins_400Regular',
   },
-  // Estilo do avatar do usuário no cabeçalho
   avatar: {
-    width: 40, // Tamanho fixo
-    height: 40, // Tamanho fixo
-    borderRadius: 20, // Borda arredondada para criar um círculo
-    marginLeft: 15, // Espaçamento à esquerda
-    borderWidth: 0, // Borda branca
-    borderColor: '#fff', // Cor da borda
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
 });

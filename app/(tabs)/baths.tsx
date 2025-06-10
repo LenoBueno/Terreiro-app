@@ -11,11 +11,11 @@ import {
   RefreshControl,
   ScrollView,
   Share,
-  SafeAreaView,
+  Modal,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { useRouter } from 'expo-router';
+import StandardPage from '@/components/templates/StandardPage';
 import { Bath } from '../../types/bath';
 
 interface BathCardProps {
@@ -75,16 +75,13 @@ async function fetchBaths(): Promise<Bath[]> {
 }
 
 export default function BathsScreen() {
-  const navigation = useNavigation<DrawerNavigationProp<any>>();
-  
-  const handleBackPress = () => {
-    navigation.navigate('(tabs)');
-  };
+  const router = useRouter();
   const [baths, setBaths] = useState<Bath[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedBath, setSelectedBath] = useState<Bath | null>(null);
-
+  const [modalVisible, setModalVisible] = useState(false);
+  
   const loadBaths = async (isRefreshing = false) => {
     try {
       if (!isRefreshing) {
@@ -123,57 +120,28 @@ export default function BathsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      
-        {/* Cabeçalho */}
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <TouchableOpacity onPress={() => navigation.openDrawer()}>
-              <MaterialIcons
-                name="blur-on"
-                size={34}
-                color="#fff"
-                style={{ marginLeft: 16 }}
-              />
-            </TouchableOpacity>
+    <StandardPage
+      title="Banhos"
+      showBackButton={true}
+      contentStyle={{ backgroundColor: '#fff' }}
+    >
+      <View style={styles.content}>
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#006B3F" />
           </View>
-          <View style={styles.headerIcons}>
-            <Image
-              source={{
-                uri: 'https://randomuser.me/api/portraits/women/44.jpg',
-              }}
-              style={styles.avatar}
-            />
-          </View>
-        </View>
-
-        {/* Títulos */}
-        <View style={styles.titlesContainer}>
-          <TouchableOpacity onPress={handleBackPress}>
-            <MaterialIcons
-              name="chevron-left"
-              size={30}
-              color="#fff"
-              style={{ marginLeft: 1 }}
-            />
-          </TouchableOpacity>
-          <View style={styles.titlesText}>
-            <Text style={styles.headerTitle}>Banhos</Text>
-            <Text style={styles.headerSubtitle}>
-              Rituais de limpeza e proteção
-            </Text>
-          </View>
-        </View>
-
-        {/* Conteúdo */}
-        <View style={styles.content}>
+        ) : (
           <FlatList
             data={baths}
             renderItem={({ item }) => (
-              <BathCard bath={item} onPress={setSelectedBath} />
+              <BathCard
+                bath={item}
+                onPress={(bath) => {
+                  setSelectedBath(bath);
+                }}
+              />
             )}
             keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.bathsList}
             refreshControl={
               <RefreshControl
@@ -184,144 +152,101 @@ export default function BathsScreen() {
               />
             }
             ListEmptyComponent={
-              loading ? (
-                <View style={styles.loadingContainer}>
-                  <ActivityIndicator size="large" color="#006B3F" />
-                </View>
-              ) : (
-                <View style={styles.emptyContainer}>
-                  <MaterialIcons name="bathtub" size={48} color="#9E9E9E" />
-                  <Text style={styles.emptyText}>Nenhum banho encontrado</Text>
-                </View>
-              )
+              <View style={styles.emptyContainer}>
+                <MaterialIcons name="bathtub" size={48} color="#9E9E9E" />
+                <Text style={styles.emptyText}>Nenhum banho encontrado</Text>
+              </View>
             }
           />
-        </View>
+        )}
+      </View>
 
-        {/* Modal de Detalhes */}
-        {selectedBath && (
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>{selectedBath.title}</Text>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => setSelectedBath(null)}
-                >
-                  <MaterialIcons name="close" size={24} color="#333" />
-                </TouchableOpacity>
+      {/* Modal de Detalhes */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={!!selectedBath}
+        onRequestClose={() => setSelectedBath(null)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{selectedBath?.title}</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setSelectedBath(null)}
+              >
+                <MaterialIcons name="close" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalContent}>
+              {selectedBath?.imageUrl && (
+                <Image
+                  source={{ uri: selectedBath.imageUrl }}
+                  style={styles.modalImage}
+                  resizeMode="cover"
+                />
+              )}
+
+              <View style={styles.modalSection}>
+                <Text style={styles.sectionTitle}>Descrição</Text>
+                <Text style={styles.bathText}>
+                  {selectedBath?.description}
+                </Text>
               </View>
 
-              <ScrollView style={styles.modalContent}>
-                {selectedBath.imageUrl && (
-                  <Image
-                    source={{ uri: selectedBath.imageUrl }}
-                    style={styles.modalImage}
-                    resizeMode="cover"
-                  />
-                )}
-
-                <View style={styles.modalSection}>
-                  <Text style={styles.sectionTitle}>Descrição</Text>
-                  <Text style={styles.bathText}>
-                    {selectedBath.description}
-                  </Text>
+              <View style={styles.modalSection}>
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>Modo de Preparo</Text>
+                  <TouchableOpacity
+                    style={styles.shareButton}
+                    onPress={() => selectedBath && handleShare(selectedBath)}
+                  >
+                    <MaterialIcons name="share" size={20} color="#006B3F" />
+                    <Text style={styles.shareButtonText}>Compartilhar</Text>
+                  </TouchableOpacity>
                 </View>
+                <Text style={styles.bathText}>
+                  {selectedBath?.preparation}
+                </Text>
+              </View>
 
-                <View style={styles.modalSection}>
-                  <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionTitle}>Modo de Preparo</Text>
-                    <TouchableOpacity
-                      style={styles.shareButton}
-                      onPress={() => handleShare(selectedBath)}
-                    >
-                      <MaterialIcons name="share" size={20} color="#006B3F" />
-                      <Text style={styles.shareButtonText}>Compartilhar</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <Text style={styles.bathText}>
-                    {selectedBath.preparation}
-                  </Text>
-                </View>
-
+              {selectedBath?.benefits && (
                 <View style={styles.modalSection}>
                   <Text style={styles.sectionTitle}>Benefícios</Text>
                   <Text style={styles.bathText}>{selectedBath.benefits}</Text>
                 </View>
+              )}
 
-                {selectedBath.tips && (
-                  <View style={styles.modalSection}>
-                    <Text style={styles.sectionTitle}>Dicas</Text>
-                    <Text style={styles.bathText}>{selectedBath.tips}</Text>
-                  </View>
-                )}
-              </ScrollView>
+              {selectedBath?.tips && (
+                <View style={styles.modalSection}>
+                  <Text style={styles.sectionTitle}>Dicas</Text>
+                  <Text style={styles.bathText}>{selectedBath.tips}</Text>
+                </View>
+              )}
+            </ScrollView>
 
-              <View style={styles.modalFooter}>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={() => setSelectedBath(null)}
-                >
-                  <Text style={styles.modalButtonText}>Fechar</Text>
-                </TouchableOpacity>
-              </View>
+            <View style={styles.modalFooter}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => setSelectedBath(null)}
+              >
+                <Text style={styles.modalButtonText}>Fechar</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        )}
-    </SafeAreaView>
+        </View>
+      </Modal>
+    </StandardPage>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#006B3F',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#006B3F',
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginLeft: 10,
-  },
-  titlesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-  },
-  titlesText: {
-    marginLeft: 16,
-  },
-  headerTitle: {
-    fontSize: 24,
-    color: '#fff',
-    fontFamily: 'Poppins_600SemiBold',
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontFamily: 'Poppins_400Regular',
-  },
   content: {
     flex: 1,
     backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingTop: 24,
+    paddingHorizontal: 8,
   },
   bathsList: {
     padding: 16,

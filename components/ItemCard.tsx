@@ -1,119 +1,123 @@
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Image, 
-  ImageSourcePropType, 
-  StyleProp, 
-  ViewStyle, 
-  ImageStyle, 
-  TextStyle,
-  TouchableOpacityProps 
-} from 'react-native';
+import React, { ReactNode } from 'react';
+import { View, StyleSheet, TouchableOpacity, Image, ImageSourcePropType, Text } from 'react-native';
 
-export interface ItemCardProps extends TouchableOpacityProps {
+interface ItemCardProps {
+  /**
+   * Título exibido no card
+   */
   title: string;
-  subtitle?: string;
-  image: string | ImageSourcePropType;
-  containerStyle?: StyleProp<ViewStyle>;
-  imageStyle?: StyleProp<ImageStyle>;
-  contentStyle?: StyleProp<ViewStyle>;
-  titleStyle?: StyleProp<TextStyle>;
-  subtitleStyle?: StyleProp<TextStyle>;
-  aspectRatio?: number;
-  imageAspectRatio?: number;
-  showShadow?: boolean;
+  /**
+   * Imagem a ser exibida no card
+   */
+  image: ImageSourcePropType;
+  /**
+   * Função chamada quando o card é pressionado
+   */
   onPress?: () => void;
+  /**
+   * Estilos personalizados para o container do card
+   */
+  containerStyle?: object;
+  /**
+   * Estilos personalizados para a imagem do card
+   */
+  imageStyle?: object;
+  /**
+   * Estilos personalizados para o texto do card
+   */
+  textStyle?: object;
+  /**
+   * Componente personalizado para ser renderizado no card
+   */
+  children?: ReactNode;
 }
 
-export function ItemCard({
+/**
+ * Componente de card reutilizável para itens na interface
+ * 
+ * Exemplo de uso:
+ * ```tsx
+ * <ItemCard
+ *   title="Ervas"
+ *   image={require('@/assets/images/herbs.png')}
+ *   onPress={() => console.log('Card pressionado')}
+ * />
+ * ```
+ */
+export default function ItemCard({
   title,
-  subtitle,
   image,
-  style,
+  onPress,
   containerStyle,
   imageStyle,
-  contentStyle,
-  titleStyle,
-  subtitleStyle,
-  aspectRatio = 1,
-  imageAspectRatio = 0.7,
-  showShadow = true,
-  onPress,
-  ...rest
+  textStyle,
+  children,
 }: ItemCardProps) {
-  const imageSource = typeof image === 'string' ? { uri: image } : image;
+  // Se houver children, renderiza o conteúdo personalizado
+  if (children) {
+    return (
+      <TouchableOpacity 
+        style={[styles.card, containerStyle]} 
+        onPress={onPress}
+        activeOpacity={0.7}
+      >
+        {children}
+      </TouchableOpacity>
+    );
+  }
 
+  // Renderização padrão com imagem e título
   return (
     <TouchableOpacity 
-      style={[
-        styles.container, 
-        showShadow && styles.shadow,
-        { aspectRatio },
-        containerStyle,
-        style
-      ]} 
+      style={[styles.card, containerStyle]} 
       onPress={onPress}
-      activeOpacity={0.8}
-      {...rest}
+      activeOpacity={0.7}
     >
-      <View style={[styles.imageContainer, { aspectRatio: imageAspectRatio }]}>
+      <View style={styles.cardContent}>
         <Image 
-          source={imageSource} 
-          style={[styles.image, imageStyle]} 
-          resizeMode="cover"
+          source={image} 
+          style={[
+            styles.cardImage, 
+            title === 'Eventos' && styles.cardImageEvents,
+            imageStyle
+          ]} 
+          resizeMode="contain"
         />
       </View>
-      <View style={[styles.content, contentStyle]}>
-        <Text style={[styles.title, titleStyle]} numberOfLines={1}>
-          {title}
-        </Text>
-        {subtitle && (
-          <Text style={[styles.subtitle, subtitleStyle]} numberOfLines={1}>
-            {subtitle}
-          </Text>
-        )}
-      </View>
+      <Text style={[styles.cardText, textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    overflow: 'hidden',
+  card: {
+    width: '30%',
+    marginBottom: 20,
+    alignItems: 'center',
+    marginHorizontal: '1.66%',
   },
-  shadow: {
-    elevation: 2,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  imageContainer: {
-    width: '100%',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  content: {
-    padding: 12,
-    flex: 1,
+  cardContent: {
+    width: 80,
+    height: 80,
     justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
   },
-  title: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 14,
-    color: '#000000',
-    marginBottom: 4,
-  } as TextStyle,
-  subtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 12,
-    color: '#666666',
-  } as TextStyle,
+  cardImage: {
+    width: 75,
+    height: 75,
+    resizeMode: 'contain',
+  },
+  cardImageEvents: {
+    width: 85,
+    height: 85,
+    resizeMode: 'contain',
+    marginTop: -10,
+  },
+  cardText: {
+    fontSize: 18,
+    textAlign: 'center',
+    color: '#006B3F',
+    fontFamily: 'Poppins_500Medium',
+  },
 });

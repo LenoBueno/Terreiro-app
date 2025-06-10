@@ -21,8 +21,13 @@ const screens: (ScreenConfig | string)[] = [
   { name: 'settings' },
   { name: 'superadmin' },
   { name: 'users' },
+  { name: 'add_frente' },
+  { name: 'settings_new' },
   // Dynamic routes for herb details
   'herb_detail/lavender_detail',
+  // Dynamic routes for fronts
+  'fronts_detail/bara_detail',
+  'fronts_detail/xapana_detail',
 ];
 
 export default function AppLayout() {

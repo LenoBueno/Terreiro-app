@@ -11,11 +11,10 @@ import {
   Dimensions,
   ScrollView,
   RefreshControl,
-  SafeAreaView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { DrawerActions } from '@react-navigation/native';
+import StandardPage from '@/components/templates/StandardPage';
 
 // Types
 type EventStatus = 'scheduled' | 'cancelled' | 'completed';
@@ -149,9 +148,8 @@ const EventCard: React.FC<EventCardProps> = ({ event, onPress }) => {
   );
 };
 
-const EventsScreen: React.FC = () => {
+const EventsScreen = () => {
   const router = useRouter();
-  const navigation = useNavigation();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -182,123 +180,83 @@ const EventsScreen: React.FC = () => {
   useEffect(() => {
     loadEvents();
   }, [loadEvents]);
+
   const handleCardPress = useCallback((event: Event) => {
-    // Navegar para os detalhes do evento
     console.log('Evento selecionado:', event);
     // Exemplo: router.push(`/events/${event.id}`);
   }, []);
 
   const navigateToCreateEvent = useCallback(() => {
-    // Navegação temporária para a tela de criação de evento
     console.log('Navegar para criação de evento');
-    // TODO: Implementar navegação correta quando a rota estiver disponível
     // router.push('/events/create');
   }, []);
 
-  const toggleDrawer = () => {
-    navigation.dispatch(DrawerActions.toggleDrawer());
-  };
-
   return (
-    <SafeAreaView style={styles.container}>
-      
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <TouchableOpacity onPress={() => (navigation as any).openDrawer()}>
-              <MaterialIcons
-                name="blur-on"
-                size={34}
-                color="#fff"
-                style={{ marginLeft: 16 }}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.headerIcons}>
-            <Image
-              source={{
-                uri: 'https://randomuser.me/api/portraits/women/44.jpg',
-              }}
-              style={styles.avatar}
-            />
-          </View>
-        </View>
-
-        {/* Títulos */}
-        <View style={styles.titlesContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <MaterialIcons
-              name="chevron-left"
-              size={30}
-              color="#fff"
-              style={{ marginLeft: 1 }}
-            />
-          </TouchableOpacity>
-          <View style={styles.titlesText}>
-            <Text style={styles.headerTitle}>Eventos</Text>
-            <Text style={styles.headerSubtitle}>Próximas celebrações</Text>
-          </View>
-        </View>
-
-        {/* Filtros */}
-        <View style={styles.filtersContainer}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.filtersScroll}
+    <StandardPage 
+      title="Eventos"
+      showBackButton={true}
+      onFabPress={navigateToCreateEvent}
+      contentStyle={{ backgroundColor: '#fff' }}
+    >
+      {/* Filtros */}
+      <View style={styles.filtersContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filtersScroll}
+        >
+          <TouchableOpacity
+            style={[
+              styles.filterButton,
+              filter === 'upcoming' && styles.activeFilter,
+            ]}
+            onPress={() => setFilter('upcoming')}
           >
-            <TouchableOpacity
+            <Text
               style={[
-                styles.filterButton,
-                filter === 'upcoming' && styles.activeFilter,
+                styles.filterText,
+                filter === 'upcoming' && styles.activeFilterText,
               ]}
-              onPress={() => setFilter('upcoming')}
             >
-              <Text
-                style={[
-                  styles.filterText,
-                  filter === 'upcoming' && styles.activeFilterText,
-                ]}
-              >
-                Próximos
-              </Text>
-            </TouchableOpacity>
+              Próximos
+            </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
+          <TouchableOpacity
+            style={[
+              styles.filterButton,
+              filter === 'past' && styles.activeFilter,
+            ]}
+            onPress={() => setFilter('past')}
+          >
+            <Text
               style={[
-                styles.filterButton,
-                filter === 'past' && styles.activeFilter,
+                styles.filterText,
+                filter === 'past' && styles.activeFilterText,
               ]}
-              onPress={() => setFilter('past')}
             >
-              <Text
-                style={[
-                  styles.filterText,
-                  filter === 'past' && styles.activeFilterText,
-                ]}
-              >
-                Passados
-              </Text>
-            </TouchableOpacity>
+              Passados
+            </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
+          <TouchableOpacity
+            style={[
+              styles.filterButton,
+              filter === 'all' && styles.activeFilter,
+            ]}
+            onPress={() => setFilter('all')}
+          >
+            <Text
               style={[
-                styles.filterButton,
-                filter === 'all' && styles.activeFilter,
+                styles.filterText,
+                filter === 'all' && styles.activeFilterText,
               ]}
-              onPress={() => setFilter('all')}
             >
-              <Text
-                style={[
-                  styles.filterText,
-                  filter === 'all' && styles.activeFilterText,
-                ]}
-              >
-                Todos
-              </Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
+              Todos
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
 
         {/* Conteúdo */}
         <View style={styles.content}>
@@ -308,23 +266,7 @@ const EventsScreen: React.FC = () => {
               <EventCard event={item} onPress={handleCardPress} />
             )}
             keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={[
-              styles.eventsList,
-              events.length === 0 && { flex: 1, justifyContent: 'center' },
-            ]}
-            ListEmptyComponent={
-              loading ? (
-                <View style={styles.loadingContainer}>
-                  <ActivityIndicator size="large" color="#006B3F" />
-                </View>
-              ) : (
-                <View style={styles.emptyContainer}>
-                  <MaterialIcons name="calendar-today" size={48} color="#9E9E9E" />
-                  <Text style={styles.emptyText}>Nenhum evento encontrado</Text>
-                </View>
-              )
-            }
+            contentContainerStyle={styles.eventsList}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -333,60 +275,31 @@ const EventsScreen: React.FC = () => {
                 tintColor="#006B3F"
               />
             }
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <MaterialIcons
+                  name="event-busy"
+                  size={50}
+                  color="#9E9E9E"
+                />
+                <Text style={styles.emptyText}>
+                  Nenhum evento encontrado
+                </Text>
+              </View>
+            }
           />
         </View>
-
-        <TouchableOpacity style={styles.fab} onPress={navigateToCreateEvent}>
-          <MaterialIcons name="add" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-      </SafeAreaView>
+    </StandardPage>
   );
 };
 
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flex: 1,
-    backgroundColor: '#121212',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    paddingTop: 8,
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  headerIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  titlesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    backgroundColor: '#fff',
     paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  titlesText: {
-    flex: 1,
-    marginLeft: 8,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#9E9E9E',
   },
   filtersContainer: {
     paddingHorizontal: 8,
@@ -412,10 +325,6 @@ const styles = StyleSheet.create({
   activeFilterText: {
     color: '#FFFFFF',
     fontWeight: '600',
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 16,
   },
   eventsList: {
     paddingBottom: 24,

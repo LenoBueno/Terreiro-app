@@ -11,9 +11,16 @@ export type AppRoute =
   | '/(tabs)/baths'
   | '/(tabs)/events'
   | '/(tabs)/messages'
-  | '/(tabs)/compras'
-  | '/(tabs)/vendas'
+  | '/(tabs)/add_frente'
+  | '/(tabs)/fronts_detail/bara_detail'
+  | '/(tabs)/fronts_detail/xapana_detail'
+  | '/(tabs)/herb_detail/lavender_detail'
+  | '/(tabs)/settings_new'
+  | '/(tabs)/superadmin'
   | '/(tabs)/users'
+  | '/(auth)/login'
+  | '/(auth)/register'
+  | '/(auth)/forgot-password'
   | '/chat';
 
 export interface MenuItem {

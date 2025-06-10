@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,16 +7,15 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
-  SafeAreaView,
+  Modal,
   ScrollView,
   RefreshControl,
-  ActivityIndicator
+  ActivityIndicator,
+  Share,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useNavigation } from '@react-navigation/native';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Header } from '@/components/Header';
+import StandardPage from '@/components/templates/StandardPage';
 
 interface CleaningItem {
   id: string;
@@ -26,6 +25,7 @@ interface CleaningItem {
   method: string;
   benefits: string;
   image: string;
+  tips?: string;
 }
 
 
@@ -91,54 +91,157 @@ const CleaningCard = ({
 
 export default function CleaningScreen() {
   const router = useRouter();
-  const navigation = useNavigation<DrawerNavigationProp<any>>();
-
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<CleaningItem | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const onRefresh = React.useCallback(() => {
+  const handleRefresh = useCallback(() => {
     setRefreshing(true);
-    // Aqui você pode adicionar a lógica de refresh
+    // Simulando carregamento de dados
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000);
+    }, 1000);
   }, []);
 
   const handleCardPress = (item: CleaningItem) => {
-    // Aqui você pode adicionar a lógica para abrir os detalhes do item
-    console.log('Item selecionado:', item);
+    setSelectedItem(item);
+  };
+
+  const handleShare = async (item: CleaningItem) => {
+    try {
+      await Share.share({
+        message: `Confira esta limpeza: ${item.name}\n\n${item.description}\n\n${item.method}`,
+        title: item.name,
+      });
+    } catch (error) {
+      console.error('Erro ao compartilhar:', error);
+    }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header title="Limpezas" showBackButton />
-      <ScrollView
-        contentContainerStyle={styles.content}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+    <StandardPage 
+      title="Limpezas" 
+      showBackButton={true}
+      contentStyle={{ backgroundColor: '#fff' }}
+    >
+      <View style={styles.content}>
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#006B3F" />
+          </View>
+        ) : (
+          <FlatList
+            data={CLEANINGS}
+            renderItem={({ item }) => (
+              <CleaningCard item={item} onPress={handleCardPress} />
+            )}
+            keyExtractor={(item) => item.id}
+            numColumns={3}
+            contentContainerStyle={styles.cleaningGrid}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                colors={['#006B3F']}
+                tintColor="#006B3F"
+              />
+            }
+          />
+        )}
+      </View>
+
+      {/* Modal de Detalhes */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={!!selectedItem}
+        onRequestClose={() => setSelectedItem(null)}
       >
-        <FlatList
-          data={CLEANINGS}
-          renderItem={({ item }) => (
-            <CleaningCard item={item} onPress={handleCardPress} />
-          )}
-          keyExtractor={(item) => item.id}
-          numColumns={3}
-          contentContainerStyle={styles.cleaningGrid}
-          showsVerticalScrollIndicator={false}
-        />
-      </ScrollView>
-    </SafeAreaView>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{selectedItem?.name}</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setSelectedItem(null)}
+              >
+                <MaterialIcons name="close" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalContent}>
+              {selectedItem?.image && (
+                <Image
+                  source={{ uri: selectedItem.image }}
+                  style={styles.modalImage}
+                  resizeMode="cover"
+                />
+              )}
+
+              <View style={styles.modalSection}>
+                <Text style={styles.sectionTitle}>Descrição</Text>
+                <Text style={styles.itemText}>
+                  {selectedItem?.description}
+                </Text>
+              </View>
+
+              <View style={styles.modalSection}>
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>Método</Text>
+                  <TouchableOpacity
+                    style={styles.shareButton}
+                    onPress={() => selectedItem && handleShare(selectedItem)}
+                  >
+                    <MaterialIcons name="share" size={20} color="#006B3F" />
+                    <Text style={styles.shareButtonText}>Compartilhar</Text>
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.itemText}>
+                  {selectedItem?.method}
+                </Text>
+              </View>
+
+              <View style={styles.modalSection}>
+                <Text style={styles.sectionTitle}>Benefícios</Text>
+                <Text style={styles.itemText}>
+                  {selectedItem?.benefits}
+                </Text>
+              </View>
+
+              {selectedItem?.tips && (
+                <View style={styles.modalSection}>
+                  <Text style={styles.sectionTitle}>Dicas</Text>
+                  <Text style={styles.itemText}>{selectedItem.tips}</Text>
+                </View>
+              )}
+            </ScrollView>
+
+            <View style={styles.modalFooter}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => setSelectedItem(null)}
+              >
+                <Text style={styles.modalButtonText}>Fechar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </StandardPage>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flex: 1,
     backgroundColor: '#fff',
+    padding: 8,
   },
-  content: {
-    padding: 16,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   cleaningCard: {
     width: CARD_WIDTH,
@@ -174,5 +277,90 @@ const styles = StyleSheet.create({
     color: '#9E9E9E',
     fontFamily: 'Poppins_500Medium',
     textAlign: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    padding: 16,
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    maxHeight: '80%',
+    elevation: 5,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontFamily: 'Poppins_600SemiBold',
+    color: '#333',
+    flex: 1,
+  },
+  modalContent: {
+    padding: 16,
+  },
+  modalImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  modalSection: {
+    marginBottom: 20,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontFamily: 'Poppins_600SemiBold',
+    color: '#006B3F',
+    marginBottom: 8,
+  },
+  itemText: {
+    fontSize: 16,
+    fontFamily: 'Poppins_400Regular',
+    color: '#333',
+    lineHeight: 24,
+  },
+  shareButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 4,
+  },
+  shareButtonText: {
+    marginLeft: 4,
+    color: '#006B3F',
+    fontFamily: 'Poppins_500Medium',
+  },
+  modalFooter: {
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  modalButton: {
+    backgroundColor: '#006B3F',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 16,
+  },
+  closeButton: {
+    padding: 4,
   },
 });

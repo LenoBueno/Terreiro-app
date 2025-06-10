@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
-  SafeAreaView,
   Modal,
   ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useNavigation, DrawerActions } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import StandardPage from '@/components/templates/StandardPage';
 
 type ReadingItem = {
   id: string;
@@ -94,50 +94,9 @@ interface ReadingCardProps {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#121212',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    paddingTop: 8,
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  headerIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  titlesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  titlesText: {
-    flex: 1,
-    marginLeft: 8,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#9E9E9E',
-  },
   content: {
     flex: 1,
+    backgroundColor: '#121212',
     paddingHorizontal: 8,
   },
   readingsGrid: {
@@ -245,74 +204,30 @@ const ReadingCard: React.FC<ReadingCardProps> = ({ item, onPress }) => (
   </TouchableOpacity>
 );
 
-const ReadingScreen: React.FC = () => {
+export default function ReadingScreen() {
   const navigation = useNavigation();
-  const { width } = Dimensions.get('window');
-  const [selectedReading, setSelectedReading] = useState<ReadingItem | null>(
-    null,
-  );
+  const [selectedReading, setSelectedReading] = useState<ReadingItem | null>(null);
+  
   const handleCardPress = (item: ReadingItem) => {
     setSelectedReading(item);
   };
 
-  const toggleDrawer = () => {
-    // @ts-ignore - Navigation type will be properly handled by React Navigation
-    navigation.dispatch(DrawerActions.toggleDrawer());
-  };
-
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={toggleDrawer}>
-              <MaterialIcons
-                name="blur-on"
-                size={34}
-                color="#fff"
-                style={{ marginLeft: 16 }}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.headerIcons}>
-            <Image
-              source={{
-                uri: 'https://randomuser.me/api/portraits/women/44.jpg',
-              }}
-              style={styles.avatar}
-            />
-          </View>
-        </View>
-
-        {/* Títulos */}
-        <View style={styles.titlesContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <MaterialIcons
-              name="chevron-left"
-              size={30}
-              color="#fff"
-              style={{ marginLeft: 1 }}
-            />
-          </TouchableOpacity>
-          <View style={styles.titlesText}>
-            <Text style={styles.headerTitle}>Leituras</Text>
-            <Text style={styles.headerSubtitle}>Conhecimento e Sabedoria</Text>
-          </View>
-        </View>
-
-        {/* Conteúdo */}
-        <View style={styles.content}>
-          <FlatList
-            data={READINGS}
-            renderItem={({ item }) => (
-              <ReadingCard item={item} onPress={handleCardPress} />
-            )}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            contentContainerStyle={styles.readingsGrid}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
+    <StandardPage 
+      title="Leituras"
+      showBackButton={true}
+      contentStyle={{ backgroundColor: '#fff' }}
+    >
+      <FlatList
+        data={READINGS}
+        renderItem={({ item }) => (
+          <ReadingCard item={item} onPress={handleCardPress} />
+        )}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        contentContainerStyle={styles.readingsGrid}
+        showsVerticalScrollIndicator={false}
+      />
 
         {/* Modal de Detalhes */}
         <Modal
@@ -353,6 +268,6 @@ const ReadingScreen: React.FC = () => {
             </View>
           </View>
         </Modal>
-      </SafeAreaView>
+    </StandardPage>
   );
 }
