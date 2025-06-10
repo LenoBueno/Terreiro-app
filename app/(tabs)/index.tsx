@@ -155,66 +155,63 @@ export default function HomeScreen() {
       contentStyle={styles.content}
     >
       {/* Conteúdo principal */}
-      <ScrollView 
-        style={styles.scrollView} 
-        showsVerticalScrollIndicator={false}
-      >
-          {/* 
-            Seção do grid de cards de navegação 
-            Exibe os principais recursos do aplicativo
-          */}
-          <View style={styles.section}>
-            <View style={styles.menuGrid}>
-              {/* Mapeia cada item do menu para criar um card */}
-              {menuItems.map((item) => (
+      <View style={styles.contentContainer}>
+        {/* Seção do grid de cards de navegação */}
+        <View style={styles.section}>
+          <FlatList
+            data={menuItems}
+            renderItem={({ item }) => (
+              <View style={styles.menuItem}>
                 <ItemCard
-                  key={item.id}
                   title={item.title}
                   image={item.image}
                   onPress={() => handleCardPress(item.route)}
-                  // Estilo personalizado para o card de Eventos
                   imageStyle={item.title === 'Eventos' ? styles.menuCardImageEvents : {}}
                 />
-              ))}
-            </View>
-          </View>
+              </View>
+            )}
+            keyExtractor={item => item.id}
+            numColumns={2}
+            columnWrapperStyle={styles.menuGrid}
+            scrollEnabled={false}
+            contentContainerStyle={styles.menuContainer}
+          />
+        </View>
 
-          {/* 
-            Seção de itens recentes 
-            Mostra os itens acessados recentemente pelo usuário
-          */}
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Recentes</Text>
-              {/* Botão para ver todos os itens recentes */}
-              <TouchableOpacity>
-                <Text style={styles.seeAll}>Ver tudo</Text>
-              </TouchableOpacity>
-            </View>
-            {/* Container para os itens recentes em linha */}
-            <View style={styles.recentItemsContainer}>
-              {/* Mapeia os itens recentes da lista recentItems */}
-              {recentItems.map((item) => (
-                <TouchableOpacity 
-                  key={`recent-${item.id}`} 
-                  style={styles.recentItem}
-                  onPress={() => handleCardPress(item.route)}
-                >
-                  <View style={styles.recentItemIcon}>
-                    <Image 
-                      source={item.image} 
-                      style={styles.recentItemImage}
-                      resizeMode="contain"
-                    />
-                  </View>
-                  <Text style={styles.recentItemText} numberOfLines={1}>
-                    {item.title}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+        {/* Seção de itens recentes */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Recentes</Text>
+            <TouchableOpacity>
+              <Text style={styles.seeAll}>Ver tudo</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
+          <FlatList
+            data={recentItems}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <TouchableOpacity 
+                style={styles.recentItem}
+ onPress={() => handleCardPress(item.route)}
+              >
+                <View style={styles.recentItemIcon}>
+                  <Image 
+                    source={item.image} 
+                    style={styles.recentItemImage}
+                    resizeMode="contain"
+                  />
+                </View>
+                <Text style={styles.recentItemText} numberOfLines={1}>
+                  {item.title}
+                </Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={item => `recent-${item.id}`}
+            contentContainerStyle={styles.recentItemsContainer}
+          />
+        </View>
+      </View>
     </StandardPage>
   );
 }
