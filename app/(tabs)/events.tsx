@@ -191,104 +191,106 @@ const EventsScreen = () => {
     // router.push('/events/create');
   }, []);
 
+  // Componente de cabeçalho personalizado para o FlatList
+  const renderHeader = () => (
+    <View style={styles.filtersContainer}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filtersScroll}
+      >
+        <TouchableOpacity
+          style={[
+            styles.filterButton,
+            filter === 'upcoming' && styles.activeFilter,
+          ]}
+          onPress={() => setFilter('upcoming')}
+        >
+          <Text
+            style={[
+              styles.filterText,
+              filter === 'upcoming' && styles.activeFilterText,
+            ]}
+          >
+            Próximos
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.filterButton,
+            filter === 'past' && styles.activeFilter,
+          ]}
+          onPress={() => setFilter('past')}
+        >
+          <Text
+            style={[
+              styles.filterText,
+              filter === 'past' && styles.activeFilterText,
+            ]}
+          >
+            Passados
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.filterButton,
+            filter === 'all' && styles.activeFilter,
+          ]}
+          onPress={() => setFilter('all')}
+        >
+          <Text
+            style={[
+              styles.filterText,
+              filter === 'all' && styles.activeFilterText,
+            ]}
+          >
+            Todos
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </View>
+  );
+
   return (
     <StandardPage 
       title="Eventos"
       showBackButton={true}
       onFabPress={navigateToCreateEvent}
-      contentStyle={{ backgroundColor: '#fff' }}
+      contentStyle={{ backgroundColor: '#fff', flex: 1 }}
     >
-      {/* Filtros */}
-      <View style={styles.filtersContainer}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filtersScroll}
-        >
-          <TouchableOpacity
-            style={[
-              styles.filterButton,
-              filter === 'upcoming' && styles.activeFilter,
-            ]}
-            onPress={() => setFilter('upcoming')}
-          >
-            <Text
-              style={[
-                styles.filterText,
-                filter === 'upcoming' && styles.activeFilterText,
-              ]}
-            >
-              Próximos
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.filterButton,
-              filter === 'past' && styles.activeFilter,
-            ]}
-            onPress={() => setFilter('past')}
-          >
-            <Text
-              style={[
-                styles.filterText,
-                filter === 'past' && styles.activeFilterText,
-              ]}
-            >
-              Passados
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.filterButton,
-              filter === 'all' && styles.activeFilter,
-            ]}
-            onPress={() => setFilter('all')}
-          >
-            <Text
-              style={[
-                styles.filterText,
-                filter === 'all' && styles.activeFilterText,
-              ]}
-            >
-              Todos
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </View>
-
-        {/* Conteúdo */}
-        <View style={styles.content}>
-          <FlatList
-            data={events}
-            renderItem={({ item }) => (
-              <EventCard event={item} onPress={handleCardPress} />
-            )}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.eventsList}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={handleRefresh}
-                colors={['#006B3F']}
-                tintColor="#006B3F"
+      <View style={styles.content}>
+        <FlatList
+          data={events}
+          renderItem={({ item }) => (
+            <EventCard event={item} onPress={handleCardPress} />
+          )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.eventsList}
+          ListHeaderComponent={renderHeader}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={['#006B3F']}
+              tintColor="#006B3F"
+            />
+          }
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <MaterialIcons
+                name="event-busy"
+                size={50}
+                color="#9E9E9E"
               />
-            }
-            ListEmptyComponent={
-              <View style={styles.emptyContainer}>
-                <MaterialIcons
-                  name="event-busy"
-                  size={50}
-                  color="#9E9E9E"
-                />
-                <Text style={styles.emptyText}>
-                  Nenhum evento encontrado
-                </Text>
-              </View>
-            }
-          />
-        </View>
+              <Text style={styles.emptyText}>
+                Nenhum evento encontrado
+              </Text>
+            </View>
+          }
+        />
+      </View>
     </StandardPage>
   );
 };

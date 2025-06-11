@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cardImage: {
-    width: 75,
-    height: 75,
+    width: 85,
+    height: 85,
     resizeMode: 'contain',
   },
   cardImageEvents: {
