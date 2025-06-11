@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,8 @@ import {
   Switch,
   Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Header } from '@/components/Header';
+import { useRouter, useFocusEffect } from 'expo-router';
+import Header from '@/components/Header';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
 import {
@@ -21,16 +21,32 @@ import {
   ChevronRight,
 } from 'lucide-react-native';
 
-type SettingsScreenProps = {
-  // Add any props if needed
-};
+console.log('SettingsNewScreen: Módulo carregado');
 
-export default function SettingsScreen({}: SettingsScreenProps) {
+export default function SettingsNewScreen() {
+  console.log('SettingsNewScreen: Renderizando tela de configurações');
+  
   const { user, signOut } = useAuth();
   const { currentTenant } = useTenant();
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    console.log('SettingsNewScreen: Componente montado');
+    return () => {
+      console.log('SettingsNewScreen: Componente desmontado');
+    };
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('SettingsNewScreen: Tela em foco');
+      return () => {
+        console.log('SettingsNewScreen: Tela perdeu foco');
+      };
+    }, [])
+  );
 
   const handleSignOut = () => {
     Alert.alert('Sair', 'Tem certeza que deseja sair?', [
@@ -42,7 +58,7 @@ export default function SettingsScreen({}: SettingsScreenProps) {
         text: 'Sair',
         onPress: () => {
           signOut();
-          router.replace('/(auth)/login' as any);
+          router.replace('/(auth)/login');
         },
       },
     ]);
@@ -55,7 +71,39 @@ export default function SettingsScreen({}: SettingsScreenProps) {
     },
     scrollView: {
       flex: 1,
-      padding: 16,
+    },
+    profileSection: {
+      alignItems: 'center',
+      padding: 24,
+      backgroundColor: '#1E1E1E',
+      marginBottom: 16,
+    },
+    profileAvatar: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      backgroundColor: '#333',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    profileInitial: {
+      color: '#fff',
+      fontSize: 32,
+      fontWeight: 'bold',
+    },
+    profileInfo: {
+      alignItems: 'center',
+    },
+    profileName: {
+      color: '#fff',
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginBottom: 4,
+    },
+    profileEmail: {
+      color: '#888',
+      fontSize: 14,
     },
     section: {
       backgroundColor: '#1E1E1E',
@@ -90,13 +138,14 @@ export default function SettingsScreen({}: SettingsScreenProps) {
     },
     settingIcon: {
       marginRight: 12,
-      color: '#888',
     },
     settingButton: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
       paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: '#333',
     },
     settingButtonText: {
       color: '#fff',
@@ -105,56 +154,26 @@ export default function SettingsScreen({}: SettingsScreenProps) {
     logoutButton: {
       backgroundColor: '#D32F2F',
       borderRadius: 8,
-      padding: 16,
-      alignItems: 'center',
-      marginTop: 24,
+      padding: 12,
+      marginTop: 16,
+      justifyContent: 'center',
+      borderBottomWidth: 0,
     },
     logoutText: {
       color: '#fff',
       fontWeight: 'bold',
-      fontSize: 16,
     },
     aboutSection: {
       alignItems: 'center',
       marginTop: 16,
+      marginBottom: 24,
     },
     tenantName: {
       color: '#888',
       fontSize: 14,
-      marginBottom: 8,
-    },
-    versionText: {
-      color: '#888',
-      fontSize: 14,
-    },
-    profileSection: {
-      alignItems: 'center',
-      marginBottom: 24,
-    },
-    profileAvatar: {
-      width: 80,
-      height: 80,
-      borderRadius: 40,
-      backgroundColor: '#333',
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: 12,
-    },
-    profileInitial: {
-      color: '#fff',
-      fontSize: 32,
-      fontWeight: 'bold',
-    },
-    profileInfo: {
-      alignItems: 'center',
-    },
-    profileName: {
-      color: '#fff',
-      fontSize: 20,
-      fontWeight: 'bold',
       marginBottom: 4,
     },
-    profileEmail: {
+    versionText: {
       color: '#888',
       fontSize: 14,
     },
@@ -167,7 +186,7 @@ export default function SettingsScreen({}: SettingsScreenProps) {
         <View style={styles.profileSection}>
           <TouchableOpacity
             style={styles.profileAvatar}
-            onPress={() => router.push('/(tabs)/profile' as any)}
+            onPress={() => console.log('Clicou no avatar')}
           >
             <Text style={styles.profileInitial}>
               {user?.name ? user.name[0].toUpperCase() : 'U'}
@@ -182,7 +201,7 @@ export default function SettingsScreen({}: SettingsScreenProps) {
             </Text>
           </View>
         </View>
-
+        
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Notificações</Text>
           <View style={styles.settingItem}>
@@ -210,12 +229,12 @@ export default function SettingsScreen({}: SettingsScreenProps) {
             />
           </View>
         </View>
-
+        
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Conta</Text>
           <TouchableOpacity
             style={styles.settingButton}
-            onPress={() => router.push('/(tabs)/profile/edit' as any)}
+            onPress={() => console.log('Editar perfil')}
           >
             <View style={styles.settingLabelContainer}>
               <User size={20} color="#888" style={styles.settingIcon} />
@@ -225,7 +244,7 @@ export default function SettingsScreen({}: SettingsScreenProps) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.settingButton}
-            onPress={() => router.push('/(tabs)/help' as any)}
+            onPress={() => console.log('Ajuda')}
           >
             <View style={styles.settingLabelContainer}>
               <HelpCircle size={20} color="#888" style={styles.settingIcon} />
@@ -245,7 +264,7 @@ export default function SettingsScreen({}: SettingsScreenProps) {
             </View>
           </TouchableOpacity>
         </View>
-
+        
         <View style={styles.aboutSection}>
           <Text style={styles.tenantName}>
             {currentTenant?.name || 'Terreiro App'}

@@ -146,10 +146,12 @@ export default function HomeScreen() {
       title={`Bem-vindo, ${userName}!`}
       showBackButton={false}
       rightComponent={
-        <Image 
-          source={require('@/assets/images/profile/user.jpg')} 
-          style={styles.avatar} 
-        />
+        <TouchableOpacity onPress={() => router.push('/settings' as any)}>
+          <Image 
+            source={require('@/assets/images/profile/user.jpg')} 
+            style={styles.avatar} 
+          />
+        </TouchableOpacity>
       }
       containerStyle={styles.container}
       contentStyle={styles.content}
