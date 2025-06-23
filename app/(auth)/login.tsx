@@ -16,7 +16,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError('Email and password are required');
+      setError('Email e senha são obrigatórios');
       return;
     }
     
@@ -25,7 +25,7 @@ export default function LoginScreen() {
       await signIn(email, password);
       router.replace('/(tabs)');
     } catch (err) {
-      setError('Invalid email or password');
+      setError('Email ou senha inválidos');
     }
   };
 
@@ -57,7 +57,8 @@ export default function LoginScreen() {
               <Mail size={20} color="#000000" />
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder="Seu email"
+                placeholderTextColor="#9E9E9E"
                 value={email}
                 onChangeText={setEmail}
                 autoCapitalize="none"
@@ -69,7 +70,8 @@ export default function LoginScreen() {
               <Lock size={20} color="#000000" />
               <TextInput
                 style={styles.input}
-                placeholder="Password"
+                placeholder="Sua senha"
+                placeholderTextColor="#9E9E9E"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -77,21 +79,21 @@ export default function LoginScreen() {
             </View>
 
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>LOGIN</Text>
+              <Text style={styles.buttonText}>ENTRAR</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
               style={styles.linkButton} 
               onPress={() => router.push('/(auth)/register')}
             >
-              <Text style={styles.linkText}>Don't have an account? Register</Text>
+              <Text style={styles.linkText}>Não tem uma conta? Cadastre-se</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
               style={styles.linkButton} 
               onPress={() => router.push('/(auth)/forgot-password')}
             >
-              <Text style={styles.linkText}>Forgot password?</Text>
+              <Text style={styles.linkText}>Esqueceu sua senha?</Text>
             </TouchableOpacity>
           </View>
         </View>

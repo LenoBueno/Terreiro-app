@@ -15,7 +15,7 @@ const screens: (ScreenConfig | string)[] = [
   { name: 'cleaning' },
   { name: 'events' },
   { name: 'messages' },
-  { name: 'purchases' },
+  { name: 'shopping' },
   { name: 'sales' },
   { name: 'chat' },
   { name: 'settings' },

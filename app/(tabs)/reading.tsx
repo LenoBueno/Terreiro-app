@@ -1,273 +1,265 @@
-import { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  Dimensions,
-  Modal,
-  ScrollView,
-} from 'react-native';
+import { View, StyleSheet, ScrollView, Text, Modal, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useNavigation } from '@react-navigation/native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import StandardPage from '@/components/templates/StandardPage';
+import BookProgressCard from '@/components/BookProgressCard';
+import SmallBookCard from '@/components/SmallBookCard';
+import FloatingActionButton from '@/components/common/FloatingActionButton';
+import AddBookForm from '@/components/AddBookForm';
 
-type ReadingItem = {
+interface Book {
   id: string;
   title: string;
-  subtitle: string;
-  description: string;
-  content: string;
-  image: string;
-};
-
-const READINGS: ReadingItem[] = [
-  {
-    id: '1',
-    title: 'Introdução à Umbanda',
-    subtitle: 'Fundamentos e História',
-    description:
-      'Uma introdução aos fundamentos e história da Umbanda, suas origens e principais conceitos.',
-    content:
-      'A Umbanda é uma religião genuinamente brasileira que sintetiza elementos de várias tradições espirituais. Surgida no início do século XX, ela incorpora elementos do Candomblé, Catolicismo, Kardecismo e tradições indígenas.',
-    image: 'https://images.pexels.com/photos/6152103/pexels-photo-6152103.jpeg',
-  },
-  {
-    id: '2',
-    title: 'Orixás',
-    subtitle: 'Guias e Protetores',
-    description:
-      'Conheça os principais Orixás da Umbanda e suas características.',
-    content:
-      'Os Orixás são entidades espirituais que representam forças da natureza e aspectos da personalidade humana. Cada Orixá tem suas características próprias, domínios de atuação e formas de trabalho.',
-    image: 'https://images.pexels.com/photos/6152994/pexels-photo-6152994.jpeg',
-  },
-  {
-    id: '3',
-    title: 'Guias Espirituais',
-    subtitle: 'Mentores e Protetores',
-    description: 'Entenda o papel dos Guias Espirituais na Umbanda.',
-    content:
-      'Os Guias Espirituais são entidades que se manifestam nos terreiros para auxiliar os médiuns e consulentes. Eles podem se apresentar como Caboclos, Pretos-Velhos, Crianças, entre outras falanges.',
-    image: 'https://images.pexels.com/photos/6152995/pexels-photo-6152995.jpeg',
-  },
-  {
-    id: '4',
-    title: 'Rituais e Oferendas',
-    subtitle: 'Práticas e Significados',
-    description: 'Conheça os rituais e oferendas na Umbanda.',
-    content:
-      'Os rituais na Umbanda são práticas que visam a conexão com o sagrado, incluindo oferendas, banhos de ervas, defumações e trabalhos espirituais específicos para cada necessidade.',
-    image: 'https://images.pexels.com/photos/6152996/pexels-photo-6152996.jpeg',
-  },
-  {
-    id: '5',
-    title: 'Desenvolvimento Mediúnico',
-    subtitle: 'Caminho da Mediunidade',
-    description: 'Entenda o processo de desenvolvimento mediúnico na Umbanda.',
-    content:
-      'O desenvolvimento mediúnico é um processo de aprendizado e amadurecimento espiritual que permite ao médium se conectar e trabalhar em harmonia com as entidades espirituais.',
-    image: 'https://images.pexels.com/photos/6152997/pexels-photo-6152997.jpeg',
-  },
-  {
-    id: '6',
-    title: 'Ética na Umbanda',
-    subtitle: 'Princípios e Valores',
-    description: 'Conheça os princípios éticos da religião de Umbanda.',
-    content:
-      'A ética na Umbanda está baseada em princípios como caridade, respeito ao próximo, humildade e amor ao próximo, seguindo os ensinamentos das entidades espirituais.',
-    image: 'https://images.pexels.com/photos/6152998/pexels-photo-6152998.jpeg',
-  },
-];
-
-const { width } = Dimensions.get('window');
-const CARD_MARGIN = 8; // Margem entre os itens
-const CARD_WIDTH = (width - CARD_MARGIN * 4) / 2; // 2 itens por linha com margens laterais
-
-// TypeScript interfaces
-interface ReadingCardProps {
-  item: ReadingItem;
-  onPress: (item: ReadingItem) => void;
+  author: string;
+  totalPages: string;
+  currentPage: string;
+  percentage: number;
+  image: any;
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 0,
+    margin: 0,
+    width: '100%',
+  },
   content: {
     flex: 1,
-    backgroundColor: '#121212',
-    paddingHorizontal: 8,
+    padding: 16,
   },
-  readingsGrid: {
-    paddingBottom: 16,
-  },
-  readingCard: {
-    width: CARD_WIDTH,
-    backgroundColor: '#1E1E1E',
-    borderRadius: 12,
-    margin: CARD_MARGIN / 2,
-    overflow: 'hidden',
-    elevation: 2,
-  },
-  readingImage: {
-    width: '100%',
-    height: 120,
-  },
-  readingTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    padding: 8,
-  },
-  readingSubtitle: {
-    fontSize: 12,
-    color: '#9E9E9E',
-    paddingHorizontal: 8,
-    paddingBottom: 8,
+  emptyText: {
+    textAlign: 'center',
+    color: '#666',
+    marginTop: 20,
+    fontFamily: 'Poppins_400Regular',
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: '#fff',
+    padding: 20,
+    paddingTop: 40,
   },
-  modalContent: {
-    width: width * 0.9,
-    maxHeight: '80%',
-    backgroundColor: '#1E1E1E',
-    borderRadius: 12,
-    overflow: 'hidden',
+  section: {
+    marginBottom: 24,
   },
-  modalTextContainer: {
-    padding: 16,
-  },
-  modalImage: {
-    width: '100%',
-    height: 200,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 4,
-  },
-  modalSubtitle: {
-    fontSize: 16,
-    color: '#9E9E9E',
-    marginBottom: 12,
-  },
-  modalDescription: {
-    fontSize: 14,
-    color: '#CCCCCC',
+  sectionTitle: {
+    fontSize: 18,
+    fontFamily: 'Poppins_600SemiBold',
+    color: '#333',
     marginBottom: 16,
-    lineHeight: 20,
   },
-  detailSection: {
-    backgroundColor: '#2A2A2A',
-    borderRadius: 8,
-    padding: 12,
-    marginTop: 8,
+  booksContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginHorizontal: 0,
+    paddingHorizontal: 12,
   },
-  detailText: {
-    fontSize: 14,
-    color: '#E0E0E0',
-    lineHeight: 22,
-  },
-  closeButton: {
+  fab: {
     position: 'absolute',
-    top: 12,
-    right: 12,
-    zIndex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 20,
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
+    right: 16,
+    bottom: 24,
+    zIndex: 1000,
   },
 });
 
-const ReadingCard: React.FC<ReadingCardProps> = ({ item, onPress }) => (
-  <TouchableOpacity style={styles.readingCard} onPress={() => onPress(item)}>
-    <Image
-      source={{ uri: item.image }}
-      style={styles.readingImage}
-      resizeMode="cover"
-    />
-    <Text style={styles.readingTitle} numberOfLines={1}>
-      {item.title}
-    </Text>
-    <Text style={styles.readingSubtitle} numberOfLines={1}>
-      {item.subtitle}
-    </Text>
-  </TouchableOpacity>
-);
-
 export default function ReadingScreen() {
-  const navigation = useNavigation();
-  const [selectedReading, setSelectedReading] = useState<ReadingItem | null>(null);
-  
-  const handleCardPress = (item: ReadingItem) => {
-    setSelectedReading(item);
+  const router = useRouter();
+  const [showAddBookModal, setShowAddBookModal] = useState(false);
+  const [readingBooks, setReadingBooks] = useState<Book[]>([]);
+  const [myLibrary, setMyLibrary] = useState<Omit<Book, 'currentPage' | 'percentage'>[]>([]);
+
+  // Carregar livros do AsyncStorage ao iniciar
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const savedReadingBooks = await AsyncStorage.getItem('readingBooks');
+        const savedMyLibrary = await AsyncStorage.getItem('myLibrary');
+        
+        // Log para verificar se as imagens estão sendo encontradas
+        try {
+          console.log('Tentando carregar imagens de exemplo...');
+          const images = [
+            require('../../assets/images/ebooks/01.jpg'),
+            require('../../assets/images/ebooks/02.jpg'),
+            require('../../assets/images/ebooks/03.webp'),
+            require('../../assets/images/ebooks/04.jpg')
+          ];
+          console.log('Imagens carregadas com sucesso:', images);
+        } catch (error) {
+          console.error('Erro ao carregar imagens de exemplo:', error);
+        }
+        
+        // Se não houver livros salvos, carrega os exemplos
+        if (!savedReadingBooks) {
+          const exampleBooks: Book[] = [
+            {
+              id: '1',
+              title: 'A Força do Pensamento',
+              author: 'Autor Desconhecido',
+              totalPages: '200',
+              currentPage: '50',
+              percentage: 25,
+              image: require('../../assets/images/ebooks/01.jpg'),
+            },
+            {
+              id: '2',
+              title: 'O Poder da Mente',
+              author: 'Autor Desconhecido',
+              totalPages: '180',
+              currentPage: '45',
+              percentage: 25,
+              image: require('../../assets/images/ebooks/02.jpg'),
+            },
+            {
+              id: '3',
+              title: 'Caminhos da Fé',
+              author: 'Autor Desconhecido',
+              totalPages: '220',
+              currentPage: '55',
+              percentage: 25,
+              image: require('../../assets/images/ebooks/03.webp'),
+            },
+            {
+              id: '4',
+              title: 'Sabedoria Ancestral',
+              author: 'Autor Desconhecido',
+              totalPages: '190',
+              currentPage: '48',
+              percentage: 25,
+              image: require('../../assets/images/ebooks/04.jpg'),
+            },
+          ];
+          
+          setReadingBooks(exampleBooks);
+          await AsyncStorage.setItem('readingBooks', JSON.stringify(exampleBooks));
+        } else {
+          setReadingBooks(JSON.parse(savedReadingBooks));
+        }
+        
+        if (savedMyLibrary) {
+          setMyLibrary(JSON.parse(savedMyLibrary));
+        } else {
+          // Inicializa a biblioteca com os mesmos livros, mas sem os dados de progresso
+          const initialLibrary = readingBooks.length > 0 ? readingBooks.map(({ id, title, author, totalPages, image }) => ({
+            id,
+            title,
+            author,
+            totalPages,
+            image,
+          })) : [];
+          setMyLibrary(initialLibrary);
+          if (initialLibrary.length > 0) {
+            await AsyncStorage.setItem('myLibrary', JSON.stringify(initialLibrary));
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao carregar livros:', error);
+      }
+    };
+    
+    loadInitialData();
+  }, []);
+
+  const handleAddBook = () => {
+    setShowAddBookModal(true);
+  };
+
+  const handleSaveBook = async (newBook: { 
+    title: string; 
+    author: string; 
+    totalPages: string; 
+    image: any 
+  }) => {
+    try {
+      const newBookData = {
+        ...newBook,
+        id: Date.now().toString(),
+        currentPage: '0',
+        percentage: 0,
+      };
+
+      const newReadingBooks = [...readingBooks, newBookData];
+      setReadingBooks(newReadingBooks);
+      
+      await AsyncStorage.setItem('readingBooks', JSON.stringify(newReadingBooks));
+      setShowAddBookModal(false);
+    } catch (error) {
+      console.error('Erro ao salvar livro:', error);
+    }
+  };
+
+  const handleBookPress = (bookId: string) => {
+    // Navegar para os detalhes do livro
+    router.push(`/(tabs)/book/${bookId}` as any);
   };
 
   return (
-    <StandardPage 
-      title="Leituras"
-      showBackButton={true}
-      contentStyle={{ backgroundColor: '#fff' }}
-    >
-      <FlatList
-        data={READINGS}
-        renderItem={({ item }) => (
-          <ReadingCard item={item} onPress={handleCardPress} />
-        )}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        contentContainerStyle={styles.readingsGrid}
-        showsVerticalScrollIndicator={false}
-      />
-
-        {/* Modal de Detalhes */}
-        <Modal
-          visible={!!selectedReading}
-          animationType="slide"
-          transparent={true}
-          onRequestClose={() => setSelectedReading(null)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setSelectedReading(null)}
-              >
-                <MaterialIcons name="close" size={24} color="#000" />
-              </TouchableOpacity>
-              <ScrollView>
-                <Image
-                  source={{ uri: selectedReading?.image }}
-                  style={styles.modalImage}
-                  resizeMode="cover"
+    <View style={styles.container}>
+      <StandardPage 
+        title="Leitura" 
+        showBackButton={true}
+        contentStyle={{ backgroundColor: '#fff' }}
+      >
+        <ScrollView style={styles.content}>
+          {/* Seção Minha Biblioteca - Agora em cima */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Minha Biblioteca</Text>
+            <View style={styles.booksContainer}>
+              {readingBooks.map((book) => (
+                <SmallBookCard
+                  key={book.id}
+                  imageSource={book.image}
+                  title={book.title}
+                  author={book.author}
+                  onPress={() => handleBookPress(book.id)}
                 />
-                <View style={styles.modalTextContainer}>
-                  <Text style={styles.modalTitle}>{selectedReading?.title}</Text>
-                  <Text style={styles.modalSubtitle}>
-                    {selectedReading?.subtitle}
-                  </Text>
-                  <Text style={styles.modalDescription}>
-                    {selectedReading?.description}
-                  </Text>
-                  <View style={styles.detailSection}>
-                    <Text style={styles.detailText}>
-                      {selectedReading?.content}
-                    </Text>
-                  </View>
-                </View>
-              </ScrollView>
+              ))}
             </View>
           </View>
-        </Modal>
-    </StandardPage>
+
+          {/* Seção de Leitura Atual - Agora embaixo */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Continuar Lendo</Text>
+            {readingBooks.length > 0 ? (
+              readingBooks.map((book) => (
+                <BookProgressCard
+                  key={book.id}
+                  imageSource={book.image}
+                  title={book.title}
+                  author={book.author}
+                  currentPage={parseInt(book.currentPage, 10)}
+                  percentage={book.percentage}
+                  onPress={() => handleBookPress(book.id)}
+                />
+              ))
+            ) : (
+              <Text style={styles.emptyText}>Nenhum livro em andamento</Text>
+            )}
+          </View>
+        </ScrollView>
+      </StandardPage>
+
+      {/* Modal para adicionar novo livro */}
+      <Modal
+        visible={showAddBookModal}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setShowAddBookModal(false)}
+      >
+        <AddBookForm
+          onSubmit={handleSaveBook}
+          onCancel={() => setShowAddBookModal(false)}
+        />
+      </Modal>
+
+      <FloatingActionButton 
+        icon="add" 
+        onPress={handleAddBook}
+        style={styles.fab}
+      />
+    </View>
   );
 }

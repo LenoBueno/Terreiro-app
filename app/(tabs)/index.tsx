@@ -85,6 +85,46 @@ const menuItems: MenuItem[] = [
     route: '/(tabs)/cleaning',
     image: require('../../assets/images/home/limpeza.png')
   },
+  { 
+    id: '7',
+    title: 'Compras',
+    icon: 'shopping-cart',
+    color: '#FF9800',
+    route: '/(tabs)/shopping',
+    image: require('../../assets/images/home/001.png')
+  },
+  { 
+    id: '8',
+    title: 'Vendas',
+    icon: 'point-of-sale',
+    color: '#E91E63',
+    route: '/(tabs)/sales',
+    image: require('../../assets/images/home/002.png')
+  },
+  { 
+    id: '9',
+    title: 'Mensagens',
+    icon: 'message',
+    color: '#673AB7',
+    route: '/(tabs)/messages',
+    image: require('../../assets/images/home/003.png')
+  },
+  { 
+    id: '10',
+    title: 'Chat',
+    icon: 'chat',
+    color: '#4CAF50',
+    route: '/chat',
+    image: require('../../assets/images/home/003.png')
+  },
+  { 
+    id: '11',
+    title: 'Usuários',
+    icon: 'people',
+    color: '#9C27B0',
+    route: '/(tabs)/users',
+    image: require('../../assets/images/home/003.png')
+  },
 ];
 
 /**

@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native';
 import StandardPage from '@/components/templates/StandardPage';
 
-export default function UsersScreen() {
+export default function SalesScreen() {
   return (
-    <StandardPage title="Usuários">
+    <StandardPage title="Vendas">
       <View style={styles.container}>
         <Text style={styles.text}>Conteúdo em desenvolvimento</Text>
       </View>

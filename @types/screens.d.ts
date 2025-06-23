@@ -11,6 +11,8 @@ export type AppRoute =
   | '/(tabs)/baths'
   | '/(tabs)/events'
   | '/(tabs)/messages'
+  | '/(tabs)/shopping'
+  | '/(tabs)/sales'
   | '/(tabs)/add_frente'
   | '/(tabs)/fronts_detail/bara_detail'
   | '/(tabs)/fronts_detail/xapana_detail'

@@ -15,10 +15,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function EventsScreen() {
+export default function BathsScreen() {
   return (
     <StandardPage 
-      title="Eventos" 
+      title="Compras" 
       showBackButton={true}
       contentStyle={{ backgroundColor: '#fff' }}
     >

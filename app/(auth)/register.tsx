@@ -18,12 +18,12 @@ export default function RegisterScreen() {
 
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword) {
-      setError('All fields are required');
+      setError('Todos os campos são obrigatórios');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError('As senhas não conferem');
       return;
     }
     
@@ -32,7 +32,7 @@ export default function RegisterScreen() {
       await signUp(name, email, password);
       router.replace('/(tabs)');
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      setError('Falha no cadastro. Por favor, tente novamente.');
     }
   };
 
@@ -65,7 +65,8 @@ export default function RegisterScreen() {
                 <User size={20} color="#000000" />
                 <TextInput
                   style={styles.input}
-                  placeholder="Full Name"
+                  placeholder="Seu nome completo"
+                  placeholderTextColor="#9E9E9E"
                   value={name}
                   onChangeText={setName}
                 />
@@ -75,7 +76,8 @@ export default function RegisterScreen() {
                 <Mail size={20} color="#000000" />
                 <TextInput
                   style={styles.input}
-                  placeholder="Email"
+                  placeholder="Seu email"
+                  placeholderTextColor="#9E9E9E"
                   value={email}
                   onChangeText={setEmail}
                   autoCapitalize="none"
@@ -87,7 +89,8 @@ export default function RegisterScreen() {
                 <Lock size={20} color="#000000" />
                 <TextInput
                   style={styles.input}
-                  placeholder="Password"
+                  placeholder="Sua senha"
+                  placeholderTextColor="#9E9E9E"
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
@@ -98,7 +101,8 @@ export default function RegisterScreen() {
                 <Lock size={20} color="#000000" />
                 <TextInput
                   style={styles.input}
-                  placeholder="Confirm Password"
+                  placeholder="Confirme sua senha"
+                  placeholderTextColor="#9E9E9E"
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
                   secureTextEntry
@@ -106,14 +110,14 @@ export default function RegisterScreen() {
               </View>
 
               <TouchableOpacity style={styles.button} onPress={handleRegister}>
-                <Text style={styles.buttonText}>REGISTRE-SE</Text>
+                <Text style={styles.buttonText}>CADASTRAR</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
                 style={styles.linkButton} 
                 onPress={() => router.push('/(auth)/login')}
               >
-                <Text style={styles.linkText}>Already have an account? Login</Text>
+                <Text style={styles.linkText}>Já tem uma conta? Faça login</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

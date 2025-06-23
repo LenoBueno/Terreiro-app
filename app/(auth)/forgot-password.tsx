@@ -13,16 +13,16 @@ export default function ForgotPasswordScreen() {
 
   const handleResetPassword = async () => {
     if (!email) {
-      setError('Email is required');
+      setError('Email é obrigatório');
       return;
     }
     
     try {
       setError(null);
-      // Implement password reset logic here
+      // Implementar lógica de redefinição de senha aqui
       setSuccess(true);
     } catch (err) {
-      setError('Failed to send reset instructions. Please try again.');
+      setError('Falha ao enviar as instruções de redefinição. Por favor, tente novamente.');
     }
   };
 
@@ -30,16 +30,16 @@ export default function ForgotPasswordScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.innerContainer}>
-          <Text style={styles.title}>Check Your Email</Text>
+          <Text style={styles.title}>Verifique seu Email</Text>
           <Text style={styles.message}>
-            We've sent password reset instructions to {email}. 
-            Please check your inbox.
+            Enviamos as instruções de redefinição de senha para {email}. 
+            Por favor, verifique sua caixa de entrada.
           </Text>
           <TouchableOpacity 
             style={styles.button} 
             onPress={() => router.push('/(auth)/login')}
           >
-            <Text style={styles.buttonText}>Back to Login</Text>
+            <Text style={styles.buttonText}>Voltar para o Login</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -52,9 +52,9 @@ export default function ForgotPasswordScreen() {
       style={styles.container}
     >
       <View style={styles.innerContainer}>
-        <Text style={styles.title}>Forgot Password</Text>
+        <Text style={styles.title}>Esqueci a Senha</Text>
         <Text style={styles.subtitle}>
-          Enter your email address and we'll send you instructions to reset your password.
+          Digite seu endereço de email e enviaremos instruções para redefinir sua senha.
         </Text>
         
         {error && (
@@ -67,7 +67,9 @@ export default function ForgotPasswordScreen() {
           <Mail size={20} color="#000000" />
           <TextInput
             style={styles.input}
-            placeholder="Email"
+            placeholder="Seu email"
+            placeholderTextColor="#9E9E9E"
+            autoComplete="email"
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
@@ -76,14 +78,14 @@ export default function ForgotPasswordScreen() {
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
-          <Text style={styles.buttonText}>Reset Password</Text>
+          <Text style={styles.buttonText}>Redefinir Senha</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
           style={styles.linkButton} 
           onPress={() => router.push('/(auth)/login')}
         >
-          <Text style={styles.linkText}>Back to Login</Text>
+          <Text style={styles.linkText}>Voltar para o Login</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   button: {
-    backgroundColor: '#000000',
+    backgroundColor: '#006B3F',
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFFFFF',
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Inter-Light',
     fontSize: 16,
   },
   linkButton: {

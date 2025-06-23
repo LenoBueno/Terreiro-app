@@ -18,7 +18,7 @@ const drawerItems: DrawerItem[] = [
   { route: '/(tabs)/reading', label: 'Leitura' },
   { route: '/(tabs)/messages', label: 'Mensagens' },
   { route: '/(tabs)/cleaning', label: 'Limpeza' },
-  { route: '/(tabs)/purchases', label: 'Compras' },
+  { route: '/(tabs)/shopping', label: 'Compras' },
   { route: '/(tabs)/sales', label: 'Vendas' },
   { route: '/(tabs)/herbs', label: 'Ervas' },
   { route: '/(tabs)/baths', label: 'Banhos' },
